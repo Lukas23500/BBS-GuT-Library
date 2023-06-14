@@ -1,0 +1,18 @@
+<div class="layout-wrapper">
+  <p-menubar>
+    <ng-template pTemplate="start">
+        <img src="/assets/images/recipe-icon.jpg" alt="MISSING LOGO" height="40" class="mr-2"/>
+    </ng-template>
+    <ng-template pTemplate="end">
+        <input type="text" pInputText placeholder="Search" class="w-full" />
+    </ng-template>
+    <ng-template pTemplate="end">
+      <p-button (click)="show()" icon="pi pi-info-circle" label="Categories"></p-button>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <p-button (click)="show()" icon="pi pi-info-circle" label="Ingredients"></p-button>
+    </ng-template>
+  </p-menubar>
+
+  <router-outlet></router-outlet>
+</div>
