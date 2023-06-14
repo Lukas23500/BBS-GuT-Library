@@ -1,2 +1,2 @@
-# BBS-GuT-Receipt
-BBS GuT Receipt Project
+# BBS-GuT-Recipe
+BBS GuT Recipe Project
