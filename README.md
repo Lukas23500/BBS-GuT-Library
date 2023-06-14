@@ -1,2 +1,2 @@
-# BBS-GuT-Library
-BBS GuT Library Project
+# BBS-GuT-Receipt
+BBS GuT Receipt Project
