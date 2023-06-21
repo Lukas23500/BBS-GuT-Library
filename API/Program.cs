@@ -1,7 +1,3 @@
-global using System.ComponentModel;
-global using System.ComponentModel.DataAnnotations;
-global using System.ComponentModel.DataAnnotations.Schema;
-global using System.Reflection;
 global using API.Data;
 global using API.DTOs;
 global using API.Entities;
@@ -13,6 +9,12 @@ global using AutoMapper.QueryableExtensions;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 global using Microsoft.EntityFrameworkCore;
+global using Newtonsoft.Json;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Reflection;
+global using System.Diagnostics;
 using API.Extension;
 
 var builder = WebApplication.CreateBuilder(args);

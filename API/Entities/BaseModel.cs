@@ -5,7 +5,7 @@
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [DefaultValue(0)]
-        public int IsHidden { get; set; }
+        [DefaultValue(false)]
+        public bool IsHidden { get; set; }
     }
 }

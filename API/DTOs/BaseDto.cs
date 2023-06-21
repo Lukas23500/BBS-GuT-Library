@@ -3,6 +3,6 @@
     public class BaseDto
     {
         public int Id { get; set; }
-        public int IsHidden { get; set; }
+        public bool IsHidden { get; set; }
     }
 }

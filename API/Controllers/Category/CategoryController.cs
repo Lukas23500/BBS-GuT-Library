@@ -76,8 +76,8 @@
             return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<Category>> Delete(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<CategoryDto>> Delete(int id)
         {
             var result = await _categoryService.Delete(id);
 

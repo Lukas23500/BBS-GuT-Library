@@ -4,7 +4,7 @@
     {
         Task<int> Delete(IEnumerable<int> ids);
 
-        Task<Category?> Delete(int id);
+        Task<CategoryDto?> Delete(int id);
 
         Task<GetCategoryDto?> Get(int id);
 

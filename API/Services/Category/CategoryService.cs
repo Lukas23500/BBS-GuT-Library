@@ -101,7 +101,7 @@
             return _mapper.Map<IEnumerable<CategoryDto>>(savedCategories);
         }
 
-        public async Task<Category?> Delete(int id)
+        public async Task<CategoryDto?> Delete(int id)
         {
             var category = await _context.Category.FindAsync(id);
 
@@ -111,7 +111,7 @@
                 await _context.SaveChangesAsync();
             }
 
-            return category;
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<int> Delete(IEnumerable<int> ids)

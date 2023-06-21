@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using static API.Data.ApiDbContext;
 
 namespace API.Data
 {
@@ -29,16 +29,16 @@ namespace API.Data
             {
                 c.Property(b => b.Title)
                     .IsRequired();
-                c.HasIndex(b => b.Title)
-                    .IsUnique();
+                //c.HasIndex(b => b.Title)
+                //    .IsUnique();
             });
 
             modelBuilder.Entity<Igredient>(c =>
             {
                 c.Property(b => b.Name)
                     .IsRequired();
-                c.HasIndex(b => b.Name)
-                    .IsUnique();
+                //c.HasIndex(b => b.Name)
+                //    .IsUnique();
             });
 
             modelBuilder.Entity<ImageGallery>(c =>
@@ -87,24 +87,32 @@ namespace API.Data
 
         private static void CreateQueryFilters(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsHidden != 1);
-            modelBuilder.Entity<Igredient>().HasQueryFilter(p => p.IsHidden != 1);
-            modelBuilder.Entity<ImageGallery>().HasQueryFilter(p => p.IsHidden != 1);
-            modelBuilder.Entity<Recipe>().HasQueryFilter(p => p.IsHidden != 1);
-            modelBuilder.Entity<RecipeIgredient>().HasQueryFilter(p => p.IsHidden != 1);
+            modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<Igredient>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<ImageGallery>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<Recipe>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<RecipeIgredient>().HasQueryFilter(p => p.IsHidden != true);
         }
 
         private static void SeedData(ModelBuilder modelBuilder)
         {
-            var categorySeedData = File.ReadAllText("./Data/SeedData/Category.json");
-
-            var categories = JsonConvert.DeserializeObject<List<Category>>(categorySeedData);
+            var seedData = File.ReadAllText("./Data/SeedData/Categories.json");
+            var categories = JsonConvert.DeserializeObject<List<Category>>(seedData);
 
             if (categories != null || categories?.Count > 0)
             {
                 categories = categories.OrderBy(c => c.Title).ToList();
                 modelBuilder.Entity<Category>().HasData(categories);
             }
-        }
+
+            seedData = File.ReadAllText("./Data/SeedData/Igredients.json");
+            var igredients = JsonConvert.DeserializeObject<List<Igredient>>(seedData);
+
+            if (igredients != null || igredients?.Count > 0)
+            {
+                igredients = igredients.OrderBy(c => c.Name).ToList();
+                modelBuilder.Entity<Igredient>().HasData(igredients);
+            }
+        } 
     }
 }
