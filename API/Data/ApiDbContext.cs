@@ -9,10 +9,10 @@ namespace API.Data
         }
 
         public DbSet<Category> Category { get; set; }
-        public DbSet<Igredient> Igredient { get; set; }
+        public DbSet<Ingredient> Ingredient { get; set; }
         public DbSet<ImageGallery> ImageGallery { get; set; }
         public DbSet<Recipe> Recipe { get; set; }
-        public DbSet<RecipeIgredient> RecipeIgredient { get; set; }
+        public DbSet<RecipeIngredient> RecipeIngredient { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace API.Data
                 //    .IsUnique();
             });
 
-            modelBuilder.Entity<Igredient>(c =>
+            modelBuilder.Entity<Ingredient>(c =>
             {
                 c.Property(b => b.Name)
                     .IsRequired();
@@ -72,13 +72,13 @@ namespace API.Data
                 //    .IsRequired();
             });
 
-            modelBuilder.Entity<RecipeIgredient>(c =>
+            modelBuilder.Entity<RecipeIngredient>(c =>
             {
                 //c.HasOne(b => b.Recipe).WithMany()
                 //    .HasForeignKey(c => c.RecipeId)
                 //    .IsRequired();
-                //c.HasOne(b => b.Igredient).WithMany()
-                //    .HasForeignKey(c => c.IgredientId)
+                //c.HasOne(b => b.Ingredient).WithMany()
+                //    .HasForeignKey(c => c.IngredientId)
                 //    .IsRequired();
                 c.Property(b => b.Amount)
                     .IsRequired();
@@ -88,10 +88,10 @@ namespace API.Data
         private static void CreateQueryFilters(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsHidden != true);
-            modelBuilder.Entity<Igredient>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<Ingredient>().HasQueryFilter(p => p.IsHidden != true);
             modelBuilder.Entity<ImageGallery>().HasQueryFilter(p => p.IsHidden != true);
             modelBuilder.Entity<Recipe>().HasQueryFilter(p => p.IsHidden != true);
-            modelBuilder.Entity<RecipeIgredient>().HasQueryFilter(p => p.IsHidden != true);
+            modelBuilder.Entity<RecipeIngredient>().HasQueryFilter(p => p.IsHidden != true);
         }
 
         private static void SeedData(ModelBuilder modelBuilder)
@@ -105,13 +105,13 @@ namespace API.Data
                 modelBuilder.Entity<Category>().HasData(categories);
             }
 
-            seedData = File.ReadAllText("./Data/SeedData/Igredients.json");
-            var igredients = JsonConvert.DeserializeObject<List<Igredient>>(seedData);
+            seedData = File.ReadAllText("./Data/SeedData/Ingredients.json");
+            var ingredients = JsonConvert.DeserializeObject<List<Ingredient>>(seedData);
 
-            if (igredients != null || igredients?.Count > 0)
+            if (ingredients != null || ingredients?.Count > 0)
             {
-                igredients = igredients.OrderBy(c => c.Name).ToList();
-                modelBuilder.Entity<Igredient>().HasData(igredients);
+                ingredients = ingredients.OrderBy(c => c.Name).ToList();
+                modelBuilder.Entity<Ingredient>().HasData(ingredients);
             }
         } 
     }

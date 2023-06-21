@@ -1,6 +1,6 @@
 ﻿namespace API.Services
 {
-    public interface IRecipeIgredientService : IApplicationService
+    public interface IRecipeIngredientService : IApplicationService
     {
     }
 }

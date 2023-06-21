@@ -2,13 +2,13 @@
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class RecipeIgredientController : ApiControllerBase
+    public class RecipeIngredientController : ApiControllerBase
     {
-        private readonly IRecipeIgredientService _recipeIgredientService;
+        private readonly IRecipeIngredientService _recipeIngredientService;
 
-        public RecipeIgredientController(IRecipeIgredientService recipeIgredientService)
+        public RecipeIngredientController(IRecipeIngredientService recipeIngredientService)
         {
-            _recipeIgredientService = recipeIgredientService;
+            _recipeIngredientService = recipeIngredientService;
         }
     }
 }
