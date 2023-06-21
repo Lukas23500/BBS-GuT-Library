@@ -1,2 +1,2 @@
-# BBS-GuT-Library
-BBS GuT Library Project
+# BBS-GuT-Recipe
+BBS GuT Recipe Project
