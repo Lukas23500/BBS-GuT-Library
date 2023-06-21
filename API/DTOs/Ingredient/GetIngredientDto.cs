@@ -1,11 +1,11 @@
 ﻿namespace API.DTOs
 {
-    public class GetCategoryDto : IMappedDto<Category>
+    public class GetIngredientDto : IMappedDto<Ingredient>
     {
         public int Id { get; set; }
 
         [Required]
         [StringLength(100)]
-        public required string Title { get; set; }
+        public required string Name { get; set; }
     }
 }

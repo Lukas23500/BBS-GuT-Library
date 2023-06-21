@@ -1,8 +1,8 @@
 ﻿namespace API.Services
 {
-    public class RecipeIgredientService : ServiceBase, IRecipeIgredientService
+    public class RecipeIngredientService : ServiceBase, IRecipeIngredientService
     {
-        public RecipeIgredientService(ApiDbContext context, IMapper mapper) : base(context, mapper)
+        public RecipeIngredientService(ApiDbContext context, IMapper mapper) : base(context, mapper)
         {
         }
     }

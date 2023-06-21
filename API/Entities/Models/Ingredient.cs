@@ -1,6 +1,6 @@
 ﻿namespace API.Entities
 {
-    public class Igredient : BaseModel
+    public class Ingredient : BaseModel
     {
         public required string Name { get; set; }
     }

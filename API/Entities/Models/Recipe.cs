@@ -12,6 +12,6 @@
         public Category Category { get; set; } = null!;
 
         public ICollection<ImageGallery> ImageGallery { get; } = new List<ImageGallery>();
-        public ICollection<RecipeIgredient> RecipeIgredients { get; } = new List<RecipeIgredient>();
+        public ICollection<RecipeIngredient> RecipeIngredients { get; } = new List<RecipeIngredient>();
     }
 }
