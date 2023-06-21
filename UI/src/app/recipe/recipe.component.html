@@ -1,0 +1,61 @@
+<div class="recipe_wrapper">
+
+  <div class="content_wrapper">
+
+    <div class="content_left content">
+      <div class="galleria_wrapper">
+        <div class="card">
+          <p-galleria id="p-galleria" [(ngModel)]="images" [autoPlay]="true" [circular]="true" [responsiveOptions]="responsiveOptions" [numVisible]="5"  [containerStyle]="{ 'max-width': '640px' }" ngDefaultControl>
+            <ng-template pTemplate="item" let-item>
+                <img [src]="item.itemImageSrc" style="width: 100%;" />
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+                <div class="grid grid-nogutter justify-content-center">
+                    <img [src]="item.thumbnailImageSrc" />
+                </div>
+            </ng-template>
+          </p-galleria>
+        </div>
+      </div>
+      <div class="card flex justify-content-center">
+        <p-toast></p-toast>
+        <p-fileUpload mode="basic" chooseLabel="Upload" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" (onUpload)="onUpload($event)"></p-fileUpload>
+      </div>
+    </div>
+
+    <div class="content_right content">
+      <div class="data_wrapper">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">www</span>
+          <input type="text" pInputText placeholder="Website" />
+        </div>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">$</span>
+          <input type="text" pInputText placeholder="Price" />
+        </div>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">www</span>
+          <input type="text" pInputText placeholder="Website" />
+        </div>
+        <div class="p-inputgroup">
+          <span class="p-float-label">
+            <textarea id="float-input" rows="5" cols="30" pInputTextarea></textarea>
+            <label for="float-input">Ablauf</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="ingredients_wrapper">
+        <div class="card flex">
+          <p-multiSelect [options]="cities" [(ngModel)]="selectedCities" defaultLabel="Select a City" optionLabel="name" display="chip"></p-multiSelect>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer_wrapper">
+    <p-button label="Back" class="back_btn" (onClick)="close()"></p-button>
+    <p-button label="Create" class="create_btn" *ngIf="type == true"></p-button>
+  </div>
+</div>
