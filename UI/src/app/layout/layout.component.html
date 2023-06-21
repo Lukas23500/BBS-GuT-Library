@@ -1,18 +1,24 @@
-<div class="layout-wrapper">
-  <p-menubar>
+<div class="layout_wrapper">
+
+  <p-menubar [model]="items" class="layout_header">
     <ng-template pTemplate="start">
-        <img src="/assets/images/recipe-icon.jpg" alt="MISSING LOGO" height="40" class="mr-2"/>
+        <img src="/assets/images/recipe-icon.jpg" alt="MISSING LOGO" height="40" class="mr-2" routerLink=""/>
     </ng-template>
     <ng-template pTemplate="end">
-        <input type="text" pInputText placeholder="Search" class="w-full" />
-    </ng-template>
-    <ng-template pTemplate="end">
-      <p-button (click)="show()" icon="pi pi-info-circle" label="Categories"></p-button>
-    </ng-template>
-    <ng-template pTemplate="end">
-      <p-button (click)="show()" icon="pi pi-info-circle" label="Ingredients"></p-button>
+      <p-button (click)="show()" label="New Recipe"></p-button>
     </ng-template>
   </p-menubar>
 
   <router-outlet></router-outlet>
+
+  <p-menubar class="layout_footer">
+    <ng-template pTemplate="start">
+      <div class="footer_wrapper">
+        <label>Your Recipe Book</label>
+        <label>By Edwin Miller & Lukas Schneider</label>
+        <label>BBS GuT IuK F1a</label>
+      </div>
+    </ng-template>
+  </p-menubar>
+
 </div>

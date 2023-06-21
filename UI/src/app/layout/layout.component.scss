@@ -1,0 +1,19 @@
+.layout_wrapper{
+  & .layout_header ::ng-deep img{
+    cursor: pointer;
+  }
+  & .layout_footer ::ng-deep{
+    & .p-menubar{
+      display: block;
+
+      & .footer_wrapper{
+        display: flex;
+        flex-direction: column;
+
+        & label {
+          text-align: center;
+        }
+      }
+    }
+  }
+}

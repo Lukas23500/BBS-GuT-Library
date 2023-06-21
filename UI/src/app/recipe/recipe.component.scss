@@ -1,0 +1,54 @@
+.recipe_wrapper{
+  & .content_wrapper{
+    display: flex;
+    flex-direction: row;
+
+    & .content{
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+    }
+
+    & .content_left{
+      padding-right: 2rem;
+    }
+
+    & .content_right{
+      border-left: 1px solid black;
+      padding-left: 2rem;
+
+      & .p-inputgroup{
+        padding: 1rem;
+
+        & input{
+          width: 100%;
+        }
+
+        & textarea{
+          width: 100%;
+        }
+      }
+
+      & .ingredients_wrapper{
+        & .card{
+          padding: 1rem;
+          & p-multiselect{
+            width: 100%;
+            & ::ng-deep .p-multiselect{
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+  & .footer_wrapper{
+    padding-top: 2rem;
+    display: flex;
+    justify-content: end;
+
+    & .back_btn{
+      margin-right: 1rem;
+    }
+  }
+}
