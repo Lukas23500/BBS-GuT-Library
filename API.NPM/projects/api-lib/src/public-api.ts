@@ -2,6 +2,8 @@
  * Public API Surface of api-lib
  */
 
-export * from './lib/api-lib.service';
-export * from './lib/api-lib.component';
-export * from './lib/api-lib.module';
+// export the DTOs
+export * from './exported-dtos';
+
+// export the services
+export * from './exported-services';
