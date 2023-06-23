@@ -3,7 +3,7 @@
     public class CategoryDto : BaseDto, IMappedDto<Category>
     {
         [Required]
-        [StringLength(100)]
+        [StringLength(255)]
         public required string Title { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using static API.Data.ApiDbContext;
+﻿using Microsoft.OpenApi.Extensions;
 
 namespace API.Data
 {
@@ -54,11 +54,11 @@ namespace API.Data
             {
                 c.Property(b => b.Name)
                     .IsRequired();
-                c.Property(b => b.PrepTime)
+                c.Property(b => b.PrepTimeMinutes)
                     .IsRequired();
                 c.Property(b => b.DifficultyLevel)
                     .HasConversion(
-                        v => v.ToString(),
+                        v => v.GetDisplayName(),
                         v => (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), v))
                     .IsRequired();
                 c.Property(b => b.Instruction)
@@ -113,6 +113,6 @@ namespace API.Data
                 ingredients = ingredients.OrderBy(c => c.Name).ToList();
                 modelBuilder.Entity<Ingredient>().HasData(ingredients);
             }
-        } 
+        }
     }
 }

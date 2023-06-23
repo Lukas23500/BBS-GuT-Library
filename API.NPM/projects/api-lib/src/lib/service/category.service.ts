@@ -1,6 +1,6 @@
 import { Observable, lastValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL, ServiceBase } from './base.service';
 import { GetCategoryDto } from '../dto/category/get-category.dto.model';
 import { CategoryDto } from '../dto/category/category.dto.model';
@@ -46,13 +46,9 @@ export class CategoryService extends ServiceBase {
   }
 
   public bulkSave(category: CategoryDto[]): Observable<CategoryDto[]> {
-    return this.http.post<CategoryDto[]>(
-      `${this.serviceUrl}/BulkSave`,
-      category,
-      {
-        headers: this.generateHeaders(),
-      }
-    );
+    return this.http.post<CategoryDto[]>(`${this.serviceUrl}/BulkSave`, category, {
+      headers: this.generateHeaders(),
+    });
   }
 
   public delete(id: number): Observable<CategoryDto> {

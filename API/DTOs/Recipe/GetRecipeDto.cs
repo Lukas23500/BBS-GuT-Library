@@ -1,7 +1,8 @@
-﻿namespace API.Entities
+﻿namespace API.DTOs
 {
-    public class Recipe : BaseModel
+    public class GetRecipeDto : IMappedDto<Recipe>
     {
+        public int Id { get; set; }
         public required string Name { get; set; }
         public int PrepTimeMinutes { get; set; }
         public DifficultyLevel DifficultyLevel { get; set; }
@@ -9,9 +10,8 @@
         public int Rating { get; set; }
         public required string ThumbnailUrl { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
 
-        public ICollection<ImageGallery> ImageGallery { get; } = new List<ImageGallery>();
-        public ICollection<RecipeIngredient> RecipeIngredients { get; } = new List<RecipeIngredient>();
+        public ICollection<GetImageGalleryDto>? ImageGallery { get; set; }
+        public ICollection<GetRecipeIngredientDto>? RecipeIngredients { get; set; }
     }
 }
