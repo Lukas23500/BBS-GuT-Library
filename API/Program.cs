@@ -14,7 +14,7 @@ global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Reflection;
-global using System.Diagnostics;
+global using System.Text.RegularExpressions;
 using API.Extension;
 
 var builder = WebApplication.CreateBuilder(args);

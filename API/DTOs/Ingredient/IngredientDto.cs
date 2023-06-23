@@ -3,7 +3,7 @@
     public class IngredientDto : BaseDto, IMappedDto<Ingredient>
     {
         [Required]
-        [StringLength(100)]
+        [StringLength(255)]
         public required string Name { get; set; }
     }
 }
