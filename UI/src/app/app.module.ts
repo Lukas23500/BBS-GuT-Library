@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { Inject, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HomeComponent } from './home/home.component';
@@ -28,8 +28,10 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { SplitterModule } from 'primeng/splitter';
 
-import { ProductService } from './testdata/productservice';
-import { PhotoService } from './testdata/photoservice';
+import { API_BASE_URL, CLIENT_URL } from 'api-lib/projects/api-lib/src/lib/service/base.service';
+import { CategoriesDialogComponent } from './categories/categories-dialog/categories-dialog.component';
+import { IngredientsDialogComponent } from './ingredients/ingredients-dialog/ingredients-dialog.component';
+import { RecipeDialogComponent } from './recipe/recipe-dialog/recipe-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,10 @@ import { PhotoService } from './testdata/photoservice';
     HomeComponent,
       IngredientsComponent,
       CategoriesComponent,
-      RecipeComponent
+      RecipeComponent,
+      CategoriesDialogComponent,
+      IngredientsDialogComponent,
+      RecipeDialogComponent
    ],
   imports: [
     BrowserModule,
@@ -61,11 +66,22 @@ import { PhotoService } from './testdata/photoservice';
     SplitterModule
   ],
   providers: [
-    ProductService,
-    PhotoService,
     DialogService,
     MessageService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  // baseUrl: string = '';
+  // clientUrl: string = '';
+  // constructor(
+  //   @Inject(API_BASE_URL) baseUrl: string,
+  //   @Inject(CLIENT_URL) clientUrl: string
+  // ) {
+  //   if (baseUrl) this.baseUrl = baseUrl;
+  //   if (clientUrl) this.clientUrl = clientUrl;
+
+  //   baseUrl = this.baseUrl;
+  //   clientUrl = this.clientUrl;
+  // }
+}

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { RecipeComponent } from '../recipe/recipe.component';
-import { Product } from '../testdata/product';
+import { CategoriesDialogComponent } from '../categories/categories-dialog/categories-dialog.component';
+import { RecipeDto } from 'api-lib/projects/api-lib/src/exported-dtos';
 
 @Component({
   selector: 'app-layout',
@@ -36,20 +36,20 @@ export class LayoutComponent {
   }
 
   show() {
-    this.ref = this.dialogService.open(RecipeComponent, {
+    this.ref = this.dialogService.open(CategoriesDialogComponent, {
       header: 'Create a Recipe',
       width: '90%',
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        id: 'new'
+        id: 0
       }
     });
 
-    this.ref.onClose.subscribe((product: Product) => {
-        if (product) {
-            this.messageService.add({ severity: 'info', summary: 'Recipe created', detail: product.name });
+    this.ref.onClose.subscribe((recipe: RecipeDto) => {
+        if (recipe) {
+            this.messageService.add({ severity: 'info', summary: 'Recipe created', detail: recipe.name });
         }
     });
 

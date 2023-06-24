@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
-import { Product } from '../testdata/product';
-import { ProductService } from '../testdata/productservice';
+import { IngredientDto, RecipeService } from 'api-lib/projects/api-lib/src/public-api';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SelectItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { RecipeComponent } from '../recipe/recipe.component';
+import { GetRecipeDto } from 'api-lib/projects/api-lib/src/lib/dto/recipe/get-recipe.dto.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-
-  products: Product[] = [];
+export class HomeComponent implements OnInit, OnDestroy {
 
   sortOptions: SelectItem[] = [];
 
@@ -23,31 +22,52 @@ export class HomeComponent {
 
   ref: DynamicDialogRef = new DynamicDialogRef;
 
+  public recipe_data: GetRecipeDto[] = [];
+
+  private onDestroy: Subject<void> = new Subject<void>();
+
   constructor(
-    private productService: ProductService,
     public dialogService: DialogService,
-    public messageService: MessageService
+    public messageService: MessageService,
+    private recipeService: RecipeService
   ) {}
 
-  ngOnInit() {
-    this.productService.getProducts().then((data) => (this.products = data.slice(0, 5)));
-
-    this.sortOptions = [
-        { label: 'Price High to Low', value: '!price' },
-        { label: 'Price Low to High', value: 'price' }
-    ];
+  ngOnInit(): void {
+    this.loadRecipes();
   }
 
-  show() {
+  ngOnDestroy(): void {
+    this.onDestroy.next();
+    this.onDestroy.complete();
+  }
+
+  private loadRecipes() {
+    this.recipeService.getAll('', 0).pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (data) => {
+        this.recipe_data = data;
+      },
+      error: (exception) => {
+        console.log('error by loading all recipe entries: ' + exception);
+      },
+      complete: () => {
+        console.log('get all recipe entries complete');
+      }
+    });
+  }
+
+  show(recipe_id: any) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Recipe Details',
       width: '90%',
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
-      maximizable: true
+      maximizable: true,
+      data: {
+        id: recipe_id
+      }
     });
 
-    this.ref.onClose.subscribe((product: Product) => {});
+    this.ref.onClose.subscribe((ingredient: IngredientDto) => {});
 
     this.ref.onMaximize.subscribe((value) => {
         this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
@@ -65,20 +85,4 @@ export class HomeComponent {
           this.sortField = value;
       }
   }
-
-  getSeverity (product: Product) {
-      switch (product.inventoryStatus) {
-          case 'INSTOCK':
-              return 'success';
-
-          case 'LOWSTOCK':
-              return 'warning';
-
-          case 'OUTOFSTOCK':
-              return 'danger';
-
-          default:
-              return undefined;
-      }
-  };
 }
