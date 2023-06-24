@@ -1,6 +1,6 @@
 import { Observable, lastValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { API_BASE_URL, ServiceBase } from './base.service';
 import { GetRecipeDto } from '../dto/recipe/get-recipe.dto.model';
 import { RecipeDto } from '../dto/recipe/recipe.dto.model';
@@ -25,15 +25,17 @@ export class RecipeService extends ServiceBase {
     });
   }
 
-  public getAll(): Observable<GetRecipeDto[]> {
+  public getAll(name: string, categoryId: number): Observable<GetRecipeDto[]> {
     return this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll`, {
+      params: new HttpParams().append('name', name).append('categoryId', categoryId),
       headers: this.generateHeaders(),
     });
   }
 
-  public getAllAsync(): Promise<GetRecipeDto[]> {
+  public getAllAsync(name: string, categoryId: number): Promise<GetRecipeDto[]> {
     return lastValueFrom(
       this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll/Async`, {
+        params: new HttpParams().append('name', name).append('categoryId', categoryId),
         headers: this.generateHeaders(),
       })
     );
