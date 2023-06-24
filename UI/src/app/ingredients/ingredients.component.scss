@@ -1,3 +1,9 @@
 .ingredients_wrapper{
   padding-top: 1rem;
+
+  & .card{
+    & ::ng-deep th:last-child {
+      text-align: center !important;
+    }
+  }
 }
