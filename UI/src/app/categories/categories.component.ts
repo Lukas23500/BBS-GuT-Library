@@ -12,11 +12,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
 
-  ref: DynamicDialogRef = new DynamicDialogRef;
-
-  public category_data: GetCategoryDto[] = [];
-  private selected_category: CategoryDto = {} as CategoryDto;
-
+  private ref: DynamicDialogRef = new DynamicDialogRef;
+  public categoryData: GetCategoryDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
@@ -34,10 +31,20 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  // private loadCategories() {
+  //   this.categoryData = [
+  //     {id: 0, title: 'Suppe'},
+  //     {id: 1, title: 'Auflauf'},
+  //     {id: 2, title: 'Brot'},
+  //     {id: 3, title: 'Pizza'},
+  //     {id: 4, title: 'Burger'}
+  //   ]
+  // }
+
   private loadCategories() {
     this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
-        this.category_data = data;
+        this.categoryData = data;
       },
       error: (exception) => {
         console.log('error by loading all category entries: ' + exception);
@@ -48,12 +55,8 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public editRow(rowData: CategoryDto) {
-    this.selected_category = { ...rowData };
-  }
-
-  public saveRow() {
-    this.categoryService.save(this.selected_category).pipe(takeUntil(this.onDestroy)).subscribe({
+  public saveRow(rowData: CategoryDto) {
+    this.categoryService.save(rowData).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by saving new category entry: ' + exception);
       },
@@ -61,12 +64,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
         console.log('successfully saved category entry');
       },
     });
-  }
-
-  public cancelRowEdit() {
-    this.selected_category.id = 0;
-    this.selected_category.isHidden = false;
-    this.selected_category.title = '';
   }
 
   public deleteRow(rowData: CategoryDto) {

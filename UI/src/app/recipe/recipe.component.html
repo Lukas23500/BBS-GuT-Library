@@ -1,9 +1,9 @@
 <div class="recipe_wrapper">
 
   <div class="header_wrapper">
-    <p-rating [(ngModel)]="recipe.rating" [readonly]="true" [cancel]="false"></p-rating>
-    <span class="text-2xl font-bold text-900">{{ recipe.name }}</span>
-    <span class="font-semibold">{{ recipe.categoryId }}</span>
+    <p-rating [(ngModel)]="recipe.rating" [readonly]="false" [cancel]="false"></p-rating>
+    <input type="text" pInputText [(ngModel)]="recipe.name" class="text-2xl font-bold text-900"/>
+    <p-dropdown [options]="difficultyLevel" [(ngModel)]="recipe.difficultyLevel" optionLabel="name" placeholder="Difficulty Level"></p-dropdown>
   </div>
 
   <div class="content_wrapper">
@@ -11,13 +11,13 @@
     <div class="content_left content">
       <div class="galleria_wrapper">
         <div class="card">
-          <p-galleria id="p-galleria" [(ngModel)]="images" [autoPlay]="true" [circular]="true" [responsiveOptions]="responsiveOptions" [numVisible]="5"  [containerStyle]="{ 'max-width': '640px' }" ngDefaultControl>
+          <p-galleria id="p-galleria" [(ngModel)]="recipe.imageGallery" [autoPlay]="true" [circular]="true" [responsiveOptions]="responsiveOptions" [numVisible]="5"  [containerStyle]="{ 'max-width': '640px' }" ngDefaultControl>
             <ng-template pTemplate="item" let-item>
-                <img [src]="item.itemImageSrc" style="width: 100%;" />
+                <img [src]="item.imageUrl" style="width: 100%;" />
             </ng-template>
             <ng-template pTemplate="thumbnail" let-item>
                 <div class="grid grid-nogutter justify-content-center">
-                    <img [src]="item.thumbnailImageSrc" />
+                    <img [src]="item.imageUrl" />
                 </div>
             </ng-template>
           </p-galleria>
@@ -35,7 +35,7 @@
         <p-table [value]="recipe.recipeIngredients" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width:20%">Title</th>
+                    <th style="width:20%">Name</th>
                     <th style="width:20%" class="add_button_wrapper">
                       <p-button (onClick)="show()">Add</p-button>
                     </th>
@@ -46,19 +46,19 @@
                     <td>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input pInputText type="text" [(ngModel)]="rowData.title">
+                                <input pInputText type="text" [(ngModel)]="rowData.ingredient.name">
                             </ng-template>
                             <ng-template pTemplate="output">
-                                {{rowData.id}}
+                                {{rowData.ingredient.name}}
                             </ng-template>
                         </p-cellEditor>
                     </td>
                     <td>
                         <div class="flex align-items-center justify-content-center gap-2">
-                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="editRow(rowData)" class="p-button-rounded p-button-text"></button>
-                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="saveRow()" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="cancelRowEdit()" class="p-button-rounded p-button-text p-button-danger"></button>
-                            <button pButton pRipple type="button" icon="pi pi-trash" (click)="deleteRow(rowData)" class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="saveRow(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger"></button>
+                            <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="deleteRow(rowData)" class="p-button-rounded p-button-text p-button-danger"></button>
                         </div>
                     </td>
                 </tr>
@@ -70,7 +70,9 @@
   </div>
 
   <div class="footer_wrapper">
+    <p-button label="Delete" icon="pi pi-trash" styleClass="p-button-danger" class="delete_btn" *ngIf="recipeId > 0" (onclick)="deleteRecipe()"></p-button>
     <p-button label="Back" class="back_btn" (onClick)="close()"></p-button>
-    <p-button label="Create" class="create_btn" *ngIf="recipe_id == 0"></p-button>
+    <p-button label="Create" class="create_btn" *ngIf="recipeId == 0" (onclick)="saveNewRecipe()"></p-button>
+    <p-button label="Save" class="save_btn" *ngIf="recipeId > 0" (onclick)="saveRecipe()"></p-button>
   </div>
 </div>

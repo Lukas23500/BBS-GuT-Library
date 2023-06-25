@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { RecipeService, GetRecipeDto, IngredientDto } from 'api-lib';
+import { RecipeService, GetRecipeDto, IngredientDto, DifficultyLevel, GetCategoryDto, CategoryService } from 'api-lib';
 import { SelectItem } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -13,22 +13,16 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  sortOptions: SelectItem[] = [];
-
-  sortOrder: number = 0;
-
-  sortField: string = '';
-
-  ref: DynamicDialogRef = new DynamicDialogRef;
-
-  public recipe_data: GetRecipeDto[] = [];
-
+  public categoryData: GetCategoryDto[] = [];
+  private ref: DynamicDialogRef = new DynamicDialogRef;
+  public recipeData: GetRecipeDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
     public dialogService: DialogService,
     public messageService: MessageService,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private categoryService: CategoryService
   ) { }
 
   ngOnInit(): void {
@@ -40,10 +34,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  // private loadRecipes() {
+  //   this.recipeData = [
+  //     {id: 11, name: 'Mischbrot', rating: 3, instruction: 'Die Hefe in etwas Wasser (abgeschöpft von dem 1/2 Liter) auflösen. Das fein gemahlene Roggen- und Weizenmehl in eine Rührschüssel geben und alle Zutaten miteinander verrühren. Den Teig eine Stunde gehen lassen und anschließend nochmals durchkneten. Die Masse in eine gefettete Kastenform geben. Im vorgeheizten Backofen ca. 1 Stunde bei 200°C backen. Tipp: Eine feuerfeste Schüssel mit Wasser im Backofen begünstigt, dass der Teig besser aufgeht.', categoryId: 1, difficultyLevel: DifficultyLevel.Normal, prepTimeMinutes: 15, thumbnailUrl: '',
+  //     recipeIngredients: [],
+  //     imageGallery: []}
+  //   ];
+  //   this.categoryData = [
+  //     {id: -1, title: 'All'},
+  //     {id: 0, title: 'Suppe'},
+  //     {id: 1, title: 'Auflauf'},
+  //     {id: 2, title: 'Brot'},
+  //     {id: 3, title: 'Pizza'},
+  //     {id: 4, title: 'Burger'}
+  //   ];
+  // }
+
   private loadRecipes() {
     this.recipeService.getAll('', 0).pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
-        this.recipe_data = data;
+        this.recipeData = data;
       },
       error: (exception) => {
         console.log('error by loading all recipe entries: ' + exception);
@@ -52,9 +62,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.log('get all recipe entries complete');
       }
     });
+    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (data) => {
+        this.categoryData = data;
+      },
+      error: (exception) => {
+        console.log('error by loading all category entries: ' + exception);
+      },
+      complete: () => {
+        console.log('get all category entries complete');
+      }
+    });
   }
 
-  show(recipe_id: any) {
+  show(recipeId: any) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Recipe Details',
       width: '90%',
@@ -62,7 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        id: recipe_id
+        id: recipeId
       }
     });
 
@@ -74,14 +95,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any) {
-    let value = event.value;
-
-    if (value.indexOf('!') === 0) {
-      this.sortOrder = -1;
-      this.sortField = value.substring(1, value.length);
-    } else {
-      this.sortOrder = 1;
-      this.sortField = value;
+    if (event.value.title == 'All') {
+      this.recipeData.filter((recipe: GetRecipeDto) => recipe.categoryId !== null);
+    }else{
+      this.recipeData.filter((recipe: GetRecipeDto) => recipe.categoryId === event.value.id);
     }
   }
 }

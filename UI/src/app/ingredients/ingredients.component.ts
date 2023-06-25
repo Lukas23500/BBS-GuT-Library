@@ -12,11 +12,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class IngredientsComponent implements OnInit, OnDestroy {
 
-  ref: DynamicDialogRef = new DynamicDialogRef;
-
-  public ingredient_data: GetIngredientDto[] = [];
-  private selected_ingredient: IngredientDto = {} as IngredientDto;
-
+  private ref: DynamicDialogRef = new DynamicDialogRef;
+  public ingredientData: GetIngredientDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
@@ -34,10 +31,20 @@ export class IngredientsComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  // private loadIngredients() {
+  //   this.ingredientData = [
+  //     {id: 0, name: 'Salz'},
+  //     {id: 1, name: 'Pfeffer'},
+  //     {id: 2, name: 'Chilipulver'},
+  //     {id: 3, name: 'Mehl'},
+  //     {id: 4, name: 'Ei'}
+  //   ]
+  // }
+
   private loadIngredients() {
     this.ingredientService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
-        this.ingredient_data = data;
+        this.ingredientData = data;
       },
       error: (exception) => {
         console.log('error by loading all ingredient entries: ' + exception);
@@ -48,12 +55,8 @@ export class IngredientsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public editRow(rowData: IngredientDto) {
-    this.selected_ingredient = { ...rowData };
-  }
-
-  public saveRow() {
-    this.ingredientService.save(this.selected_ingredient).pipe(takeUntil(this.onDestroy)).subscribe({
+  public saveRow(rowData: IngredientDto) {
+    this.ingredientService.save(rowData).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by saving new ingredient entry: ' + exception);
       },
@@ -61,12 +64,6 @@ export class IngredientsComponent implements OnInit, OnDestroy {
         console.log('successfully saved ingredient entry');
       },
     });
-  }
-
-  public cancelRowEdit() {
-    this.selected_ingredient.id = 0;
-    this.selected_ingredient.isHidden = false;
-    this.selected_ingredient.name = '';
   }
 
   public deleteRow(rowData: IngredientDto) {

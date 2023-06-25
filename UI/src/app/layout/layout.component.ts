@@ -1,9 +1,9 @@
-import { CategoriesDialogComponent } from '../categories/categories-dialog/categories-dialog.component';
 import { Component } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MenuItem } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { RecipeDto } from 'api-lib';
+import { RecipeComponent } from '../recipe/recipe.component';
 
 @Component({
   selector: 'app-layout',
@@ -36,7 +36,7 @@ export class LayoutComponent {
   }
 
   show() {
-    this.ref = this.dialogService.open(CategoriesDialogComponent, {
+    this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Create a Recipe',
       width: '90%',
       contentStyle: { overflow: 'auto' },
