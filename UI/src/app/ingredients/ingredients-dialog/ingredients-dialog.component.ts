@@ -1,7 +1,6 @@
-import { IngredientService } from 'api-lib/projects/api-lib/src/public-api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IngredientDto } from 'api-lib/projects/api-lib/src/exported-dtos';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IngredientDto, IngredientService } from 'api-lib';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -19,10 +18,10 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private ingredientService: IngredientService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-      this.new_ingredient = {} as IngredientDto;
+    this.new_ingredient = {} as IngredientDto;
   }
 
   ngOnDestroy(): void {
@@ -33,16 +32,15 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
   public saveNewEntry() {
     this.ingredientService.save(this.new_ingredient).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by creating new ingredient entry: ' + exception);
+        console.log('error by creating new ingredient entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully created ingredient entry');
+        console.log('successfully created ingredient entry');
       },
-    })
+    });
   }
 
-  close()
-  {
+  close() {
     this.ref.close();
   }
 }

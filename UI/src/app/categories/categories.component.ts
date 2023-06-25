@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CategoryService } from 'api-lib/projects/api-lib/src/exported-services';
-import { CategoryDto, GetCategoryDto } from 'api-lib/projects/api-lib/src/exported-dtos';
-import { Subject, takeUntil } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { CategoriesDialogComponent } from './categories-dialog/categories-dialog.component';
+import { CategoryDto, CategoryService, GetCategoryDto } from 'api-lib';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -24,7 +23,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private dialogService: DialogService,
     private messageService: MessageService
-    ){}
+  ) { }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -56,10 +55,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public saveRow() {
     this.categoryService.save(this.selected_category).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by saving new category entry: ' + exception);
+        console.log('error by saving new category entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully saved category entry');
+        console.log('successfully saved category entry');
       },
     });
   }
@@ -73,10 +72,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public deleteRow(rowData: CategoryDto) {
     this.categoryService.delete(rowData.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by deleting new category entry: ' + exception);
+        console.log('error by deleting new category entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully deleted category entry');
+        console.log('successfully deleted category entry');
       },
     });
   }
@@ -91,13 +90,13 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
 
     this.ref.onClose.subscribe((category: CategoryDto) => {
-        if (category) {
-            this.messageService.add({ severity: 'info', summary: 'Category created', detail: category.title });
-        }
+      if (category) {
+        this.messageService.add({ severity: 'info', summary: 'Category created', detail: category.title });
+      }
     });
 
     this.ref.onMaximize.subscribe((value) => {
-        this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+      this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
   }
 }

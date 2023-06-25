@@ -1,10 +1,9 @@
-import { IngredientService } from 'api-lib/projects/api-lib/src/public-api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
-import { GetIngredientDto, IngredientDto } from 'api-lib/projects/api-lib/src/exported-dtos';
-import { Subject, takeUntil } from 'rxjs';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
+import { GetIngredientDto, IngredientDto, IngredientService } from 'api-lib';
 import { IngredientsDialogComponent } from './ingredients-dialog/ingredients-dialog.component';
+import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-ingredients',
@@ -24,7 +23,7 @@ export class IngredientsComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private ingredientService: IngredientService,
     private dialogService: DialogService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadIngredients();
@@ -56,10 +55,10 @@ export class IngredientsComponent implements OnInit, OnDestroy {
   public saveRow() {
     this.ingredientService.save(this.selected_ingredient).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by saving new ingredient entry: ' + exception);
+        console.log('error by saving new ingredient entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully saved ingredient entry');
+        console.log('successfully saved ingredient entry');
       },
     });
   }
@@ -73,10 +72,10 @@ export class IngredientsComponent implements OnInit, OnDestroy {
   public deleteRow(rowData: IngredientDto) {
     this.ingredientService.delete(rowData.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by deleting new ingredient entry: ' + exception);
+        console.log('error by deleting new ingredient entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully deleted ingredient entry');
+        console.log('successfully deleted ingredient entry');
       },
     });
   }
@@ -91,13 +90,13 @@ export class IngredientsComponent implements OnInit, OnDestroy {
     });
 
     this.ref.onClose.subscribe((category: IngredientDto) => {
-        if (category) {
-            this.messageService.add({ severity: 'info', summary: 'Ingredient created', detail: category.name });
-        }
+      if (category) {
+        this.messageService.add({ severity: 'info', summary: 'Ingredient created', detail: category.name });
+      }
     });
 
     this.ref.onMaximize.subscribe((value) => {
-        this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+      this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
   }
 }

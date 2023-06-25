@@ -1,10 +1,9 @@
-import { IngredientDto, RecipeService } from 'api-lib/projects/api-lib/src/public-api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SelectItem } from 'primeng/api';
-import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { GetRecipeDto } from 'api-lib/projects/api-lib/src/lib/dto/recipe/get-recipe.dto.model';
+import { RecipeService, GetRecipeDto, IngredientDto } from 'api-lib';
+import { SelectItem } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -30,7 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     public dialogService: DialogService,
     public messageService: MessageService,
     private recipeService: RecipeService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadRecipes();
@@ -67,22 +66,22 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.ref.onClose.subscribe((ingredient: IngredientDto) => {});
+    this.ref.onClose.subscribe((ingredient: IngredientDto) => { });
 
     this.ref.onMaximize.subscribe((value) => {
-        this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+      this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
   }
 
   onSortChange(event: any) {
-      let value = event.value;
+    let value = event.value;
 
-      if (value.indexOf('!') === 0) {
-          this.sortOrder = -1;
-          this.sortField = value.substring(1, value.length);
-      } else {
-          this.sortOrder = 1;
-          this.sortField = value;
-      }
+    if (value.indexOf('!') === 0) {
+      this.sortOrder = -1;
+      this.sortField = value.substring(1, value.length);
+    } else {
+      this.sortOrder = 1;
+      this.sortField = value;
+    }
   }
 }

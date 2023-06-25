@@ -4,6 +4,7 @@ import { DifficultyLevel } from './lib/enum/difficulty-level.enum';
 import { GetCategoryDto } from './lib/dto/category/get-category.dto.model';
 import { GetImageGalleryDto } from './lib/dto/image-gallery/get-image-gallery.dto.model copy';
 import { GetIngredientDto } from './lib/dto/ingredient/get-ingredient.dto.model';
+import { GetRecipeDto } from './lib/dto/recipe/get-recipe.dto.model';
 import { GetRecipeIngredientDto } from './lib/dto/recipe-igredient/get-recipe-igredient.dto.model';
 import { ImageGalleryDto } from './lib/dto/image-gallery/image-gallery.dto.model';
 import { IngredientDto } from './lib/dto/ingredient/ingredient.dto.model';
@@ -17,6 +18,7 @@ export {
   GetCategoryDto,
   GetImageGalleryDto,
   GetIngredientDto,
+  GetRecipeDto,
   GetRecipeIngredientDto,
   ImageGalleryDto,
   IngredientDto,
