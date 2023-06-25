@@ -29,6 +29,10 @@ import { SplitterModule } from 'primeng/splitter';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
   declarations: [
@@ -61,6 +65,11 @@ import { ToastModule } from 'primeng/toast';
     TableModule,
     TagModule,
     ToastModule,
+    CardModule,
+    DropdownModule,
+    InputTextModule,
+    CheckboxModule,
+    RadioButtonModule
   ],
   providers: [
     DialogService,

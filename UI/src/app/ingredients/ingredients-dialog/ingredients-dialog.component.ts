@@ -10,8 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class IngredientsDialogComponent implements OnInit, OnDestroy {
 
-  public new_ingredient: IngredientDto = {} as IngredientDto;
-
+  public newIngredient: IngredientDto = {} as IngredientDto;
   private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
@@ -21,7 +20,7 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.new_ingredient = {} as IngredientDto;
+    this.newIngredient = {} as IngredientDto;
   }
 
   ngOnDestroy(): void {
@@ -30,17 +29,14 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
   }
 
   public saveNewEntry() {
-    this.ingredientService.save(this.new_ingredient).pipe(takeUntil(this.onDestroy)).subscribe({
+    this.ingredientService.save(this.newIngredient).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by creating new ingredient entry: ' + exception);
+        this.ref.close();
       },
       complete: () => {
         console.log('successfully created ingredient entry');
       },
     });
-  }
-
-  close() {
-    this.ref.close();
   }
 }

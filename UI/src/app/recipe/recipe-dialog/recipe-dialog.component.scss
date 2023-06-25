@@ -1,0 +1,16 @@
+.recipe_ingredient_dialog_wrapper .p-inputgroup{
+  justify-content: space-between;
+
+  & p-dropdown{
+    max-width: fit-content;
+    margin-right: 3rem;
+  }
+
+  & input {
+    margin: 0 2rem 0 2rem;
+  }
+
+  &::ng-deep .p-dropdown {
+    width: 150% !important;
+  }
+}

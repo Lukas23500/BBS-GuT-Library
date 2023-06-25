@@ -1,4 +1,14 @@
 .recipe_wrapper{
+  & .header_wrapper{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 2rem;
+
+    & .difficultyLevel{
+      pointer-events: none;
+    }
+  }
+
   & .content_wrapper{
     display: flex;
     flex-direction: row;
@@ -6,7 +16,6 @@
     & .content{
       display: flex;
       flex-direction: column;
-      width: 50%;
     }
 
     & .content_left{
@@ -14,38 +23,25 @@
     }
 
     & .content_right{
-      border-left: 1px solid black;
-      padding-left: 2rem;
-
-      & .p-inputgroup{
+      border-left: 1px solid #dee2e6;
+      padding-left: 1rem;
+      & .card{
         padding: 1rem;
-
-        & input{
-          width: 100%;
-        }
-
-        & textarea{
-          width: 100%;
-        }
-      }
-
-      & .ingredients_wrapper{
-        & .card{
-          padding: 1rem;
-          & p-multiselect{
-            width: 100%;
-            & ::ng-deep .p-multiselect{
-              width: 100%;
-            }
-          }
+        & ::ng-deep th:last-child {
+          text-align: center !important;
         }
       }
     }
   }
+
   & .footer_wrapper{
     padding-top: 2rem;
     display: flex;
     justify-content: end;
+
+    & .delete_btn{
+      margin-right: auto;
+    }
 
     & .back_btn{
       margin-right: 1rem;

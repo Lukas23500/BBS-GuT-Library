@@ -1,0 +1,13 @@
+.home_wrapper{
+  & ::ng-deep{
+    & .instruction{
+      padding: 0 1rem 0 1rem;
+    }
+    & .edit_button{
+      margin-left: auto;
+    }
+  }
+  & .difficultyLevel{
+    pointer-events: none;
+  }
+}

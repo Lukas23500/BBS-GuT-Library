@@ -1,7 +1,7 @@
 <div class="recipe_ingredient_dialog_wrapper">
   <div class="p-inputgroup">
-    <span class="p-inputgroup-addon">Title</span>
-    <input [(ngModel)]="new_recipe_ingredient" type="text" pInputText placeholder="New recipe ingredient"/>
+    <p-dropdown [options]="ingredientData" [(ngModel)]="selectedIngredient" optionLabel="name"></p-dropdown>
+    <input [(ngModel)]="newRecipeIngredient.amount" type="text" pInputText placeholder="Amount"/>
+    <p-button (onClick)="saveNewEntry()">Add</p-button>
   </div>
-  <p-button onclick="saveNewEntry()">Create</p-button>
 </div>

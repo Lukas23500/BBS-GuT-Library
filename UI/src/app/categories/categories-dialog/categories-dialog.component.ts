@@ -10,8 +10,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class CategoriesDialogComponent implements OnDestroy, OnInit {
 
-  public new_category: CategoryDto = {} as CategoryDto;
-
+  public newCategory: CategoryDto = {} as CategoryDto;
   private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
@@ -21,7 +20,7 @@ export class CategoriesDialogComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.new_category = {} as CategoryDto;
+    this.newCategory = {} as CategoryDto;
   }
 
   ngOnDestroy(): void {
@@ -30,17 +29,14 @@ export class CategoriesDialogComponent implements OnDestroy, OnInit {
   }
 
   public saveNewEntry() {
-    this.categoryService.save(this.new_category).pipe(takeUntil(this.onDestroy)).subscribe({
+    this.categoryService.save(this.newCategory).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by creating new category entry: ' + exception);
+        this.ref.close();
       },
       complete: () => {
         console.log('successfully created category entry');
       },
     });
-  }
-
-  close() {
-    this.ref.close();
   }
 }
