@@ -1,4 +1,4 @@
-import { CategoryDto, CategoryService } from 'api-lib/projects/api-lib/src/public-api';
+import { CategoryDto, CategoryService } from 'api-lib';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -18,10 +18,10 @@ export class CategoriesDialogComponent implements OnDestroy, OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private categoryService: CategoryService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-      this.new_category = {} as CategoryDto;
+    this.new_category = {} as CategoryDto;
   }
 
   ngOnDestroy(): void {
@@ -32,16 +32,15 @@ export class CategoriesDialogComponent implements OnDestroy, OnInit {
   public saveNewEntry() {
     this.categoryService.save(this.new_category).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by creating new category entry: ' + exception);
+        console.log('error by creating new category entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully created category entry');
+        console.log('successfully created category entry');
       },
-    })
+    });
   }
 
-  close()
-  {
+  close() {
     this.ref.close();
   }
 }

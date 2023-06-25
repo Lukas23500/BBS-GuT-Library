@@ -1,22 +1,30 @@
+import { API_BASE_URL, CLIENT_URL } from 'api-lib';
+import { AppModule } from './app/app.module';
+import { enableProdMode } from '@angular/core';
+import { environment } from './assets/environments/environment.prod';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module';
-import { API_BASE_URL, CLIENT_URL } from 'api-lib/projects/api-lib/src/lib/service/base.service';
+if (environment.production) {
+  enableProdMode();
+}
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+async function main() {
+  try {
+    let _env = 'development';
+    if (environment.production) _env = 'production';
 
-// async function main() {
-//   try {
-//     await platformBrowserDynamic([
-//       { provide: CLIENT_URL, useValue: CLIENT_URL },
-//       { provide: API_BASE_URL, useValue: API_BASE_URL },
-//     ])
-//       .bootstrapModule(AppModule)
-//       .catch((err) => console.error(err));
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+    const data = await fetch('./assets/config/' + _env + '.json');
+    const config = await data.json();
 
-// main();
+    await platformBrowserDynamic([
+      { provide: CLIENT_URL, useValue: config.CLIENT_URL },
+      { provide: API_BASE_URL, useValue: config.API_ENDPOINT },
+    ])
+      .bootstrapModule(AppModule)
+      .catch((err) => console.error(err));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+main();

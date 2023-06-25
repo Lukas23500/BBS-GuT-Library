@@ -1,14 +1,11 @@
-import { RecipeIngredientService } from 'api-lib/projects/api-lib/src/public-api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { MessageService } from 'primeng/api';
+import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { GetRecipeDto } from 'api-lib/projects/api-lib/src/lib/dto/recipe/get-recipe.dto.model';
-import { Subject, takeUntil } from 'rxjs';
-import { RecipeService } from 'api-lib/projects/api-lib/src/exported-services';
-import { RecipeIngredientDto } from 'api-lib/projects/api-lib/src/exported-dtos';
+import { GetRecipeDto, RecipeIngredientDto, RecipeIngredientService, RecipeService } from 'api-lib';
+import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-recipe',
@@ -22,16 +19,16 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   responsiveOptions: any[] = [
     {
-        breakpoint: '1024px',
-        numVisible: 5
+      breakpoint: '1024px',
+      numVisible: 5
     },
     {
-        breakpoint: '768px',
-        numVisible: 3
+      breakpoint: '768px',
+      numVisible: 3
     },
     {
-        breakpoint: '560px',
-        numVisible: 1
+      breakpoint: '560px',
+      numVisible: 1
     }
   ];
 
@@ -47,7 +44,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     private recipeService: RecipeService,
     private recipeIngredientService: RecipeIngredientService,
     private dialogService: DialogService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadRecipes();
@@ -83,10 +80,10 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public saveRow() {
     this.recipeIngredientService.save(this.selected_ingedient).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by saving new recipe ingredient entry: ' + exception);
+        console.log('error by saving new recipe ingredient entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully saved recipe ingredient entry');
+        console.log('successfully saved recipe ingredient entry');
       },
     });
   }
@@ -100,10 +97,10 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public deleteRow(rowData: RecipeIngredientDto) {
     this.recipeIngredientService.delete(rowData.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-          console.log('error by deleting new recipe ingredient entry: ' + exception);
+        console.log('error by deleting new recipe ingredient entry: ' + exception);
       },
       complete: () => {
-          console.log('successfully deleted recipe ingredient entry');
+        console.log('successfully deleted recipe ingredient entry');
       },
     });
   }
@@ -112,8 +109,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
   }
 
-  public close()
-  {
+  public close() {
     this.ref.close();
   }
 
@@ -127,18 +123,18 @@ export class RecipeComponent implements OnInit, OnDestroy {
     });
 
     this.ref.onClose.subscribe((recipeIngredient: RecipeIngredientDto) => {
-        if (recipeIngredient) {
-            this.messageService.add({ severity: 'info', summary: 'Category created', detail: recipeIngredient.ingredientId.toString() });
-        }
+      if (recipeIngredient) {
+        this.messageService.add({ severity: 'info', summary: 'Category created', detail: recipeIngredient.ingredientId.toString() });
+      }
     });
 
     this.ref.onMaximize.subscribe((value) => {
-        this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+      this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
   }
 }
 
 interface City {
   name: string,
-  code: string
+  code: string;
 }
