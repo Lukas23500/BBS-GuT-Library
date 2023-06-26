@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService } from 'api-lib';
+import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService, CategoryService, GetCategoryDto } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
@@ -16,6 +16,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public recipeId: number = 0;
   public recipe: GetRecipeDto = {} as GetRecipeDto;
+  public categoryData: GetCategoryDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
   public difficultyLevel = [{name: 'Simple'},{name: 'Normal'},{name: 'Nifty'}];
 
@@ -41,6 +42,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     public config: DynamicDialogConfig,
     private recipeService: RecipeService,
     private dialogService: DialogService,
+    private categoryService: CategoryService
   ) { }
 
   ngOnInit() {
@@ -69,6 +71,17 @@ export class RecipeComponent implements OnInit, OnDestroy {
         }
       });
     }
+    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (data) => {
+        this.categoryData = data;
+      },
+      error: (exception) => {
+        console.log('error by loading all category entries: ' + exception);
+      },
+      complete: () => {
+        console.log('get all category entries complete');
+      }
+    });
   }
 
   private initRecipe() {
@@ -94,7 +107,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public onUpload(event: FileUploadEvent) {
-    this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
+    this.messageService.add({ severity: 'info', summary: 'Image uploaded', detail: 'File Uploaded with Basic Mode' });
   }
 
   public close() {
@@ -113,7 +126,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.ref2.onClose.subscribe((recipeIngredient: RecipeIngredientDto) => {
       if (recipeIngredient) {
         this.recipe.recipeIngredients.push(recipeIngredient);
-        this.messageService.add({ severity: 'info', summary: 'Category created', detail: recipeIngredient.ingredient.name });
+        this.messageService.add({ severity: 'info', summary: 'Recipe Ingredient added', detail: recipeIngredient.ingredient.name });
       }
     });
 
@@ -156,6 +169,14 @@ export class RecipeComponent implements OnInit, OnDestroy {
         this.ref.close(this.recipe);
       },
     });
+  }
+
+  public onSortChange(event: any) {
+    this.recipe.categoryId = event.value.id;
+  }
+
+  public onDifficultyChange(event: any) {
+    this.recipe.difficultyLevel = event.value.id;
   }
 
   private mapRecipe(recipe: GetRecipeDto, isHidden: boolean): RecipeDto {

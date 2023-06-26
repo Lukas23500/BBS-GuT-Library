@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService } from 'api-lib';
+import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto } from 'api-lib';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -16,6 +16,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private ref: DynamicDialogRef = new DynamicDialogRef;
   public recipeData: GetRecipeDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
+  public selectedRecipeFilter: string = '';
+  private selectedCategoryId: number = 0;
 
   constructor(
     public dialogService: DialogService,
@@ -34,7 +36,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private loadRecipes() {
-    this.recipeService.getAll('', 0).pipe(takeUntil(this.onDestroy)).subscribe({
+    this.recipeService.getAll(this.selectedRecipeFilter, this.selectedCategoryId).pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
         this.recipeData = data;
       },
@@ -85,10 +87,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any) {
-    if (event.value.title == 'All') {
-      this.recipeData.filter((recipe: GetRecipeDto) => recipe.categoryId !== null);
-    }else{
-      this.recipeData.filter((recipe: GetRecipeDto) => recipe.categoryId === event.value.id);
-    }
+    this.selectedCategoryId = event.value.id;
+  }
+
+  onFilterChange() {
+    this.loadRecipes();
   }
 }

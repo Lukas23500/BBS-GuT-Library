@@ -3,7 +3,8 @@
   <div class="header_wrapper">
     <p-rating [(ngModel)]="recipe.rating" [readonly]="false" [cancel]="false"></p-rating>
     <input type="text" pInputText [(ngModel)]="recipe.name" class="text-2xl font-bold text-900" placeholder="Title"/>
-    <div class="difficultyLevel_wrapper"><p-dropdown [options]="difficultyLevel" [(ngModel)]="recipe.difficultyLevel" optionLabel="name" placeholder="Difficulty Level"></p-dropdown></div>
+    <div class="category_wrapper"><p-dropdown [options]="categoryData" optionLabel="title" placeholder="Sort By Category" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown></div>
+    <div class="difficultyLevel_wrapper"><p-dropdown [options]="difficultyLevel" (onchange)="onDifficultyChange($event)" optionLabel="name" placeholder="Difficulty Level"></p-dropdown></div>
   </div>
 
   <div class="instruction_wrapper">
