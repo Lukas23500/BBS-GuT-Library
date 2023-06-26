@@ -32,10 +32,10 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
     this.ingredientService.save(this.newIngredient).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by creating new ingredient entry: ' + exception);
-        this.ref.close();
       },
       complete: () => {
         console.log('successfully created ingredient entry');
+        this.ref.close(this.newIngredient);
       },
     });
   }

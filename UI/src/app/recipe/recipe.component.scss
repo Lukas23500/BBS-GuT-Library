@@ -2,16 +2,37 @@
   & .header_wrapper{
     display: flex;
     justify-content: space-between;
-    padding-bottom: 2rem;
 
-    & .difficultyLevel{
-      pointer-events: none;
+    & .difficultyLevel_wrapper{
+      width: 16rem;
+      display: flex;
+      justify-content: end;
+    }
+
+    & p-rating{
+      display: flex;
+      align-items: center;
+    }
+
+    & input{
+      width: 32rem;
+    }
+  }
+
+  & .instruction_wrapper{
+    padding: 2rem 0 2rem 0;
+
+    & textarea{
+      width: 100%;
     }
   }
 
   & .content_wrapper{
     display: flex;
     flex-direction: row;
+    max-height: 24rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     & .content{
       display: flex;
@@ -20,11 +41,16 @@
 
     & .content_left{
       padding-right: 2rem;
+      border-left: 1px solid #dee2e6;
     }
 
     & .content_right{
-      border-left: 1px solid #dee2e6;
-      padding-left: 1rem;
+      //padding-left: 2rem;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+
       & .card{
         padding: 1rem;
         & ::ng-deep th:last-child {

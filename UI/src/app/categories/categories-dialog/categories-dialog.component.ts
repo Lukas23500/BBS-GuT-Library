@@ -32,10 +32,10 @@ export class CategoriesDialogComponent implements OnDestroy, OnInit {
     this.categoryService.save(this.newCategory).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by creating new category entry: ' + exception);
-        this.ref.close();
       },
       complete: () => {
         console.log('successfully created category entry');
+        this.ref.close(this.newCategory);
       },
     });
   }

@@ -11,6 +11,12 @@
   }
 
   &::ng-deep .p-dropdown {
-    width: 150% !important;
+    width: 120% !important;
+  }
+}
+:host ::ng-deep .p-dropdown-panel{
+  max-width: 24rem;
+  & .p-dropdown-filter-container input{
+    width: unset;
   }
 }
