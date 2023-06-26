@@ -1,12 +1,13 @@
 <div class="home_wrapper" style="padding-top: 16px;">
-  <div class="card" *ngIf="recipeData.length > 0">
+  <div class="card">
     <p-dataView #dv [value]="recipeData" [rows]="5" [paginator]="true">
         <ng-template pTemplate="header">
             <div class="flex flex-column md:flex-row md:justify-content-between">
                 <p-dropdown [options]="categoryData" optionLabel="title" placeholder="Sort By Category" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+                <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" placeholder="Search Recipe" (change)="onFilterChange()"/>
             </div>
         </ng-template>
-        <ng-template let-recipe pTemplate="listItem">
+        <ng-template let-recipe pTemplate="listItem" *ngIf="recipeData.length > 0">
           <div class="col-12">
               <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
                   <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + recipe.imageGallery" [alt]="recipe.name" />
@@ -16,7 +17,9 @@
                           <p-rating [(ngModel)]="recipe.rating" [readonly]="true" [cancel]="false"></p-rating>
                           <div class="flex align-items-center gap-3">
                               <span class="flex align-items-center gap-2">
-                                <button pButton icon="pi" class="md:align-self-end mb-2 p-button-rounded difficultyLevel">{{ recipe.difficultyLevel }}</button>
+                                <button *ngIf="recipe.difficultyLevel == 0" pButton icon="pi" class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Simple</button>
+                                <button *ngIf="recipe.difficultyLevel == 1" pButton icon="pi" class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Normal</button>
+                                <button *ngIf="recipe.difficultyLevel == 2" pButton icon="pi" class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Nifty</button>
                               </span>
                           </div>
                       </div>
