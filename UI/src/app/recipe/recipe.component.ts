@@ -66,9 +66,9 @@ export class RecipeComponent implements OnInit, OnDestroy {
   //       {id: 4, ingredient: {id: 4, name: 'Ei'}, amount: '5x', ingredientId: 0, isHidden: false, recipeId: 11}
   //     ],
   //     imageGallery: [
-  //       {id: 0, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11},
-  //       {id: 1, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11},
-  //       {id: 2, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11}
+  //       {id: 0, imageUrl: '', isHidden: false, recipeId: 11},
+  //       {id: 1, imageUrl: '', isHidden: false, recipeId: 11},
+  //       {id: 2, imageUrl: '', isHidden: false, recipeId: 11}
   //     ]};
   // }
 
