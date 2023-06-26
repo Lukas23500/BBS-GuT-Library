@@ -1,14 +1,19 @@
 <div class="ingredients_wrapper">
   <div class="card" *ngIf="ingredientData.length > 0">
     <p-toast></p-toast>
-    <p-table [value]="ingredientData" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+    <p-table [value]="ingredientData" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
         <ng-template pTemplate="header">
-            <tr>
-                <th style="width:20%">Name</th>
-                <th style="width:20%" class="add_button_wrapper">
-                  <p-button (onClick)="show()">Add</p-button>
-                </th>
-            </tr>
+          <tr>
+            <th style="min-width:15rem">
+              <div class="flex align-items-center">
+                Name
+                <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+              </div>
+            </th>
+            <th style="width:20%" class="add_button_wrapper">
+              <p-button (onClick)="show()">Add</p-button>
+            </th>
+          </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="rowData">
@@ -37,6 +42,7 @@
   <div class="no_results" *ngIf="ingredientData.length == 0">
     <p-card>
       <p>No categories</p>
+      <p-button (onClick)="show()">Add</p-button>
     </p-card>
   </div>
 </div>

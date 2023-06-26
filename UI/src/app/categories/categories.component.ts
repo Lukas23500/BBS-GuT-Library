@@ -31,16 +31,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  // private loadCategories() {
-  //   this.categoryData = [
-  //     {id: 0, title: 'Suppe'},
-  //     {id: 1, title: 'Auflauf'},
-  //     {id: 2, title: 'Brot'},
-  //     {id: 3, title: 'Pizza'},
-  //     {id: 4, title: 'Burger'}
-  //   ]
-  // }
-
   private loadCategories() {
     this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
@@ -73,6 +63,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully deleted category entry');
+        const index = this.categoryData.indexOf(rowData);
+        if (index > -1) {
+          this.categoryData.splice(index, 1);
+        }
       },
     });
   }
@@ -89,6 +83,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.ref.onClose.subscribe((category: CategoryDto) => {
       if (category) {
         this.messageService.add({ severity: 'info', summary: 'Category created', detail: category.title });
+        this.loadCategories();
       }
     });
 

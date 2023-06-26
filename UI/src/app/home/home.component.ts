@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { RecipeService, GetRecipeDto, IngredientDto, DifficultyLevel, GetCategoryDto, CategoryService } from 'api-lib';
-import { SelectItem } from 'primeng/api';
+import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService } from 'api-lib';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -33,22 +32,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.onDestroy.next();
     this.onDestroy.complete();
   }
-
-  // private loadRecipes() {
-  //   this.recipeData = [
-  //     {id: 11, name: 'Mischbrot', rating: 3, instruction: 'Die Hefe in etwas Wasser (abgeschöpft von dem 1/2 Liter) auflösen. Das fein gemahlene Roggen- und Weizenmehl in eine Rührschüssel geben und alle Zutaten miteinander verrühren. Den Teig eine Stunde gehen lassen und anschließend nochmals durchkneten. Die Masse in eine gefettete Kastenform geben. Im vorgeheizten Backofen ca. 1 Stunde bei 200°C backen. Tipp: Eine feuerfeste Schüssel mit Wasser im Backofen begünstigt, dass der Teig besser aufgeht.', categoryId: 1, difficultyLevel: DifficultyLevel.Normal, prepTimeMinutes: 15, thumbnailUrl: '',
-  //     recipeIngredients: [],
-  //     imageGallery: []}
-  //   ];
-  //   this.categoryData = [
-  //     {id: -1, title: 'All'},
-  //     {id: 0, title: 'Suppe'},
-  //     {id: 1, title: 'Auflauf'},
-  //     {id: 2, title: 'Brot'},
-  //     {id: 3, title: 'Pizza'},
-  //     {id: 4, title: 'Burger'}
-  //   ];
-  // }
 
   private loadRecipes() {
     this.recipeService.getAll('', 0).pipe(takeUntil(this.onDestroy)).subscribe({
@@ -87,7 +70,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.ref.onClose.subscribe((ingredient: IngredientDto) => { });
+    this.ref.onClose.subscribe((recipe: GetRecipeDto) => {
+      if (recipe) {
+        const index = this.recipeData.indexOf(recipe);
+        if (index > -1) {
+          this.recipeData[index] = recipe;
+        }
+      }
+    });
 
     this.ref.onMaximize.subscribe((value) => {
       this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });

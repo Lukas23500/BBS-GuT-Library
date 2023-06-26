@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { DifficultyLevel, GetRecipeDto, GetRecipeIngredientDto, ImageGalleryService, RecipeDto, RecipeIngredientDto, RecipeIngredientService, RecipeService } from 'api-lib';
+import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
@@ -37,18 +37,15 @@ export class RecipeComponent implements OnInit, OnDestroy {
   constructor(
     private messageService: MessageService,
     public ref: DynamicDialogRef,
+    public ref2: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private recipeService: RecipeService,
-    private recipeIngredientService: RecipeIngredientService,
     private dialogService: DialogService,
-    private imageGalleryService: ImageGalleryService
   ) { }
 
   ngOnInit() {
-    // this.loadRecipes();
-    // this.recipeId = 11;
     this.recipeId = +JSON.stringify(this.config.data.id);
-    this.loadRecipes();
+    this.loadRecipe();
   }
 
   ngOnDestroy(): void {
@@ -56,26 +53,9 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  // private loadRecipes() {
-  //   this.recipe = { id: 11, name: 'Mischbrot', rating: 3, instruction: 'Die Hefe in etwas Wasser (abgeschöpft von dem 1/2 Liter) auflösen. Das fein gemahlene Roggen- und Weizenmehl in eine Rührschüssel geben und alle Zutaten miteinander verrühren. Den Teig eine Stunde gehen lassen und anschließend nochmals durchkneten. Die Masse in eine gefettete Kastenform geben. Im vorgeheizten Backofen ca. 1 Stunde bei 200°C backen. Tipp: Eine feuerfeste Schüssel mit Wasser im Backofen begünstigt, dass der Teig besser aufgeht.', categoryId: 1, difficultyLevel: DifficultyLevel.Normal, prepTimeMinutes: 15, thumbnailUrl: '',
-  //     recipeIngredients: [
-  //       {id: 0, ingredient: {id: 0, name: 'Salz'}, amount: 'Eine Briese', ingredientId: 0, isHidden: false, recipeId: 11},
-  //       {id: 1, ingredient: {id: 1, name: 'Pfeffer'}, amount: 'Eine Briese', ingredientId: 0, isHidden: false, recipeId: 11},
-  //       {id: 2, ingredient: {id: 2, name: 'Chilipulver'}, amount: '10 Gramm', ingredientId: 0, isHidden: false, recipeId: 11},
-  //       {id: 3, ingredient: {id: 3, name: 'Mehl'}, amount: '500 Gramm', ingredientId: 0, isHidden: false, recipeId: 11},
-  //       {id: 4, ingredient: {id: 4, name: 'Ei'}, amount: '5x', ingredientId: 0, isHidden: false, recipeId: 11}
-  //     ],
-  //     imageGallery: [
-  //       {id: 0, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11},
-  //       {id: 1, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11},
-  //       {id: 2, imageUrl: '"C:\Users\LukasSchneider\source\repos\BBS-GuT-Library\UI\src\assets\images\brot1.jpg"', isHidden: false, recipeId: 11}
-  //     ]};
-  // }
-
-  private loadRecipes() {
+  private loadRecipe() {
     if (this.recipeId == 0){
-      this.recipe = {} as GetRecipeDto;
-      this.recipe.recipeIngredients = [{} as RecipeIngredientDto];
+      this.initRecipe();
     }else{
       this.recipeService.get(this.recipeId).pipe(takeUntil(this.onDestroy)).subscribe({
         next: (data) => {
@@ -91,26 +71,26 @@ export class RecipeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public saveRow(rowData: RecipeIngredientDto) {
-    this.recipeIngredientService.save(rowData).pipe(takeUntil(this.onDestroy)).subscribe({
-      error: (exception) => {
-        console.log('error by saving new recipe ingredient entry: ' + exception);
-      },
-      complete: () => {
-        console.log('successfully saved recipe ingredient entry');
-      },
-    });
+  private initRecipe() {
+    this.recipe = {
+      id: 0,
+      name: '',
+      instruction: '',
+      rating: 1,
+      prepTimeMinutes: 10,
+      difficultyLevel: DifficultyLevel.Simple,
+      categoryId: 0,
+      thumbnailUrl: '',
+      imageGallery: [],
+      recipeIngredients: []
+    };
   }
 
-  public deleteRow(rowData: RecipeIngredientDto) {
-    this.recipeIngredientService.delete(rowData.id).pipe(takeUntil(this.onDestroy)).subscribe({
-      error: (exception) => {
-        console.log('error by deleting new recipe ingredient entry: ' + exception);
-      },
-      complete: () => {
-        console.log('successfully deleted recipe ingredient entry');
-      },
-    });
+  public deleteRecipeIngredientRow(rowData: RecipeIngredientDto) {
+    const index = this.recipe.recipeIngredients.indexOf(rowData);
+    if (index > -1) {
+      this.recipe.recipeIngredients.splice(index, 1);
+    }
   }
 
   public onUpload(event: FileUploadEvent) {
@@ -121,8 +101,8 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.ref.close();
   }
 
-  public show() {
-    this.ref = this.dialogService.open(RecipeDialogComponent, {
+  public showRecipeIngredientDialog() {
+    this.ref2 = this.dialogService.open(RecipeDialogComponent, {
       header: 'Add an ingredient',
       width: '40%',
       contentStyle: { overflow: 'auto' },
@@ -130,13 +110,14 @@ export class RecipeComponent implements OnInit, OnDestroy {
       maximizable: true
     });
 
-    this.ref.onClose.subscribe((recipeIngredient: RecipeIngredientDto) => {
+    this.ref2.onClose.subscribe((recipeIngredient: RecipeIngredientDto) => {
       if (recipeIngredient) {
-        this.messageService.add({ severity: 'info', summary: 'Category created', detail: recipeIngredient.ingredientId.toString() });
+        this.recipe.recipeIngredients.push(recipeIngredient);
+        this.messageService.add({ severity: 'info', summary: 'Category created', detail: recipeIngredient.ingredient.name });
       }
     });
 
-    this.ref.onMaximize.subscribe((value) => {
+    this.ref2.onMaximize.subscribe((value) => {
       this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
   }
@@ -148,6 +129,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully created recipe entry');
+        this.ref.close(this.recipe);
       },
     });
   }
@@ -159,6 +141,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully saved recipe entry');
+        this.ref.close(this.recipe);
       },
     });
   }
@@ -170,6 +153,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully deleted recipe entry');
+        this.ref.close(this.recipe);
       },
     });
   }
@@ -187,11 +171,6 @@ export class RecipeComponent implements OnInit, OnDestroy {
       rating: recipe.rating,
       recipeIngredients: recipe.recipeIngredients,
       thumbnailUrl: recipe.thumbnailUrl
-    };
+    } as RecipeDto;
   }
-}
-
-interface City {
-  name: string,
-  code: string;
 }

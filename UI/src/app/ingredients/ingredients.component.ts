@@ -31,16 +31,6 @@ export class IngredientsComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  // private loadIngredients() {
-  //   this.ingredientData = [
-  //     {id: 0, name: 'Salz'},
-  //     {id: 1, name: 'Pfeffer'},
-  //     {id: 2, name: 'Chilipulver'},
-  //     {id: 3, name: 'Mehl'},
-  //     {id: 4, name: 'Ei'}
-  //   ]
-  // }
-
   private loadIngredients() {
     this.ingredientService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
       next: (data) => {
@@ -73,6 +63,10 @@ export class IngredientsComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully deleted ingredient entry');
+        const index = this.ingredientData.indexOf(rowData);
+        if (index > -1) {
+          this.ingredientData.splice(index, 1);
+        }
       },
     });
   }
@@ -86,9 +80,10 @@ export class IngredientsComponent implements OnInit, OnDestroy {
       maximizable: true
     });
 
-    this.ref.onClose.subscribe((category: IngredientDto) => {
-      if (category) {
-        this.messageService.add({ severity: 'info', summary: 'Ingredient created', detail: category.name });
+    this.ref.onClose.subscribe((ingredient: IngredientDto) => {
+      if (ingredient) {
+        this.messageService.add({ severity: 'info', summary: 'Ingredient created', detail: ingredient.name });
+        this.loadIngredients();
       }
     });
 
