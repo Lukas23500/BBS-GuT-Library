@@ -89,8 +89,4 @@ export class HomeComponent implements OnInit, OnDestroy {
   onSortChange(event: any) {
     this.selectedCategoryId = event.value.id;
   }
-
-  onFilterChange() {
-    this.loadRecipes();
-  }
 }
