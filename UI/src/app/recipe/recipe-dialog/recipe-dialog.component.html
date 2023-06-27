@@ -1,6 +1,6 @@
 <div class="recipe_ingredient_dialog_wrapper">
   <div class="p-inputgroup">
-    <p-dropdown [options]="ingredientData" [(ngModel)]="selectedIngredient" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Country">
+    <p-dropdown [options]="ingredientData" [(ngModel)]="selectedIngredient" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Select an Ingredient">
       <ng-template pTemplate="selectedItem">
         <div class="flex align-items-center gap-2" *ngIf="selectedIngredient.name != ''">
           <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + selectedIngredient.name.toLowerCase()" style="width: 18px"/>

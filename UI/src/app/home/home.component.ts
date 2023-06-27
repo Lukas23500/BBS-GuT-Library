@@ -3,7 +3,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
 import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto } from 'api-lib';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, of, share, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +12,13 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  public categoryData: GetCategoryDto[] = [];
   private ref: DynamicDialogRef = new DynamicDialogRef;
-  public recipeData: GetRecipeDto[] = [];
-  private onDestroy: Subject<void> = new Subject<void>();
-  public selectedRecipeFilter: string = '';
   private selectedCategoryId: number = 0;
+  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>();
+  public recipes: Observable<GetRecipeDto[]> = new Observable<GetRecipeDto[]>;
+  public selectedRecipeFilter: string = '';
+
+  private onDestroy: Subject<void> = new Subject<void>();
 
   constructor(
     public dialogService: DialogService,
@@ -27,7 +28,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadRecipes();
+    this.recipes = this.loadRecipes();
+    this.categories = this.loadCategories();
   }
 
   ngOnDestroy(): void {
@@ -35,32 +37,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  private loadRecipes() {
-    this.recipeService.getAll(this.selectedRecipeFilter, this.selectedCategoryId).pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.recipeData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all recipe entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all recipe entries complete');
-      }
-    });
-    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.categoryData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all category entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all category entries complete');
-      }
-    });
+  private loadRecipes(): Observable<GetRecipeDto[]> {
+    return this.recipeService.getAll().pipe(share());
   }
 
-  show(recipeId: any) {
+  private loadCategories(): Observable<GetCategoryDto[]> {
+    return this.categoryService.getAll().pipe(share());
+  }
+
+  show(recipe: GetRecipeDto, categories: GetCategoryDto[]) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Recipe Details',
       width: '90%',
@@ -68,16 +53,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        id: recipeId
+        recipeId: recipe.id,
+        categories: categories
       }
     });
 
     this.ref.onClose.subscribe((recipe: GetRecipeDto) => {
       if (recipe) {
-        const index = this.recipeData.indexOf(recipe);
-        if (index > -1) {
-          this.recipeData[index] = recipe;
-        }
+        // const index = this.recipes.indexOf(recipe);
+        // if (index > -1) {
+        //   this.recipes[index] = of(recipe);
+        // }
       }
     });
 

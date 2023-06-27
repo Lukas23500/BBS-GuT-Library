@@ -43,7 +43,7 @@ export class LayoutComponent {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        id: 0
+        recipeId: 0
       }
     });
 

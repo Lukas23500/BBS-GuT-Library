@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService, CategoryService, GetCategoryDto } from 'api-lib';
+import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService, CategoryService, GetCategoryDto, ImageGalleryDto } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, of, share, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-recipe',
@@ -13,12 +13,16 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./recipe.component.scss']
 })
 export class RecipeComponent implements OnInit, OnDestroy {
+  public get DifficultyLevel(): any {
+    return Object.entries(DifficultyLevel);
+  }
 
+
+  // public recipe: GetRecipeDto = {} as GetRecipeDto;
+  public recipe: Observable<RecipeDto> = new Observable<RecipeDto>;
   public recipeId: number = 0;
-  public recipe: GetRecipeDto = {} as GetRecipeDto;
-  public categoryData: GetCategoryDto[] = [];
+  public categories: GetCategoryDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
-  public difficultyLevel = [{name: 'Simple'},{name: 'Normal'},{name: 'Nifty'}];
 
   responsiveOptions: any[] = [
     {
@@ -42,12 +46,17 @@ export class RecipeComponent implements OnInit, OnDestroy {
     public config: DynamicDialogConfig,
     private recipeService: RecipeService,
     private dialogService: DialogService,
-    private categoryService: CategoryService
   ) { }
 
   ngOnInit() {
-    this.recipeId = +JSON.stringify(this.config.data.id);
-    this.loadRecipe();
+    this.recipeId = JSON.parse(this.config.data.recipeId);
+    this.categories = JSON.parse(this.config.data.categories);
+
+    if (this.recipeId == 0) {
+      this.recipe = this.initNewRecipe();
+    } else {
+      this.recipe = this.loadRecipe();
+    }
   }
 
   ngOnDestroy(): void {
@@ -55,54 +64,32 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  private loadRecipe() {
-    if (this.recipeId == 0){
-      this.initRecipe();
-    }else{
-      this.recipeService.get(this.recipeId).pipe(takeUntil(this.onDestroy)).subscribe({
-        next: (data) => {
-          this.recipe = data;
-        },
-        error: (exception) => {
-          console.log('error by loading all recipe ingredient entries: ' + exception);
-        },
-        complete: () => {
-          console.log('get all recipe ingredient entries complete');
-        }
-      });
-    }
-    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.categoryData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all category entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all category entries complete');
-      }
-    });
-  }
-
-  private initRecipe() {
-    this.recipe = {
+  private initNewRecipe() {
+    const newRecipe: RecipeDto = {
       id: 0,
       name: '',
       instruction: '',
       rating: 1,
-      prepTimeMinutes: 10,
+      prepTimeMinutes: 0,
       difficultyLevel: DifficultyLevel.Simple,
       categoryId: 0,
       thumbnailUrl: '',
-      imageGallery: [],
-      recipeIngredients: []
+      imageGallery: [] as ImageGalleryDto[],
+      recipeIngredients: [] as RecipeIngredientDto[],
+      isHidden: false
     };
+
+    return of(newRecipe);
   }
 
-  public deleteRecipeIngredientRow(rowData: RecipeIngredientDto) {
-    const index = this.recipe.recipeIngredients.indexOf(rowData);
+  private loadRecipe(): Observable<RecipeDto> {
+    return this.recipeService.get(this.recipeId).pipe(share());
+  }
+
+  public deleteRecipeIngredientRow(recipe: RecipeDto, rowData: RecipeIngredientDto) {
+    const index = recipe.recipeIngredients.indexOf(rowData);
     if (index > -1) {
-      this.recipe.recipeIngredients.splice(index, 1);
+      recipe.recipeIngredients.splice(index, 1);
     }
   }
 
@@ -114,7 +101,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     this.ref.close();
   }
 
-  public showRecipeIngredientDialog() {
+  public showRecipeIngredientDialog(recipe: RecipeDto) {
     this.ref2 = this.dialogService.open(RecipeDialogComponent, {
       header: 'Add an ingredient',
       width: '40%',
@@ -125,7 +112,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
     this.ref2.onClose.subscribe((recipeIngredient: RecipeIngredientDto) => {
       if (recipeIngredient) {
-        this.recipe.recipeIngredients.push(recipeIngredient);
+        recipe.recipeIngredients.push(recipeIngredient);
         this.messageService.add({ severity: 'info', summary: 'Recipe Ingredient added', detail: recipeIngredient.ingredient.name });
       }
     });
@@ -135,63 +122,35 @@ export class RecipeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public saveNewRecipe() {
-    this.recipeService.save(this.mapRecipe(this.recipe, false)).pipe(takeUntil(this.onDestroy)).subscribe({
-      error: (exception) => {
-        console.log('error by creating new recipe entry: ' + exception);
-      },
-      complete: () => {
-        console.log('successfully created recipe entry');
-        this.ref.close(this.recipe);
-      },
-    });
-  }
-
-  public saveRecipe() {
-    this.recipeService.save(this.mapRecipe(this.recipe, false)).pipe(takeUntil(this.onDestroy)).subscribe({
+  public saveRecipe(recipe: RecipeDto) {
+    this.recipeService.save(recipe).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by saving new recipe entry: ' + exception);
       },
       complete: () => {
         console.log('successfully saved recipe entry');
-        this.ref.close(this.recipe);
+        this.ref.close(recipe);
       },
     });
   }
 
-  public deleteRecipe() {
-    this.recipeService.delete(this.recipe.id).pipe(takeUntil(this.onDestroy)).subscribe({
+  public deleteRecipe(recipe: RecipeDto) {
+    this.recipeService.delete(recipe.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
         console.log('error by deleting new recipe entry: ' + exception);
       },
       complete: () => {
         console.log('successfully deleted recipe entry');
-        this.ref.close(this.recipe);
+        this.ref.close(recipe);
       },
     });
   }
 
-  public onSortChange(event: any) {
-    this.recipe.categoryId = event.value.id;
+  public onSortChange(recipe: RecipeDto, event: any) {
+    recipe.categoryId = event.value.id;
   }
 
-  public onDifficultyChange(event: any) {
-    this.recipe.difficultyLevel = event.value.id;
-  }
-
-  private mapRecipe(recipe: GetRecipeDto, isHidden: boolean): RecipeDto {
-    return {
-      id: recipe.id,
-      categoryId: recipe.categoryId,
-      difficultyLevel: recipe.difficultyLevel,
-      imageGallery: recipe.imageGallery,
-      instruction: recipe.instruction,
-      isHidden: isHidden,
-      name: recipe.name,
-      prepTimeMinutes: recipe.prepTimeMinutes,
-      rating: recipe.rating,
-      recipeIngredients: recipe.recipeIngredients,
-      thumbnailUrl: recipe.thumbnailUrl
-    } as RecipeDto;
+  public onDifficultyChange(recipe: RecipeDto, event: any) {
+    recipe.difficultyLevel = event.value.id;
   }
 }

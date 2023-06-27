@@ -25,7 +25,7 @@
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetRecipeDto>>> GetAll([FromQuery] string name, int categoryId)
+        public async Task<ActionResult<IEnumerable<GetRecipeDto>>> GetAll([FromQuery] string? name, int? categoryId)
         {
             var result = await _recipeService.GetAll(name, categoryId);
 
@@ -38,7 +38,7 @@
         }
 
         [HttpGet("Async")]
-        public ActionResult<IAsyncEnumerable<GetRecipeDto>> GetAllAsync([FromQuery] string name, int categoryId)
+        public ActionResult<IAsyncEnumerable<GetRecipeDto>> GetAllAsync([FromQuery] string? name, int? categoryId)
         {
             var result = _recipeService.GetAllAsync(name, categoryId);
 
