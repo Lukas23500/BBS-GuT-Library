@@ -1,6 +1,6 @@
 import { CategoriesDialogComponent } from './categories-dialog/categories-dialog.component';
 import { CategoryDto, CategoryService, GetCategoryDto } from 'api-lib';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
@@ -8,7 +8,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.scss']
+  styleUrls: ['./categories.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
 

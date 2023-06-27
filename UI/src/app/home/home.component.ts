@@ -1,23 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto } from 'api-lib';
-import { Subject, takeUntil } from 'rxjs';
+import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto, CategoryDto } from 'api-lib';
+import { Observable, Subject, of, share, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
 
-  public categoryData: GetCategoryDto[] = [];
   private ref: DynamicDialogRef = new DynamicDialogRef;
-  public recipeData: GetRecipeDto[] = [];
-  private onDestroy: Subject<void> = new Subject<void>();
+  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>();
+  public recipes: Observable<GetRecipeDto[]> = new Observable<GetRecipeDto[]>;
+  public selectedCategory?: CategoryDto;
   public selectedRecipeFilter: string = '';
-  private selectedCategoryId: number = 0;
 
   constructor(
     public dialogService: DialogService,
@@ -27,40 +27,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadRecipes();
+    this.recipes = this.loadRecipes();
+    this.categories = this.loadCategories();
   }
 
-  ngOnDestroy(): void {
-    this.onDestroy.next();
-    this.onDestroy.complete();
+  private loadRecipes(name?: string, categoryId?: number): Observable<GetRecipeDto[]> {
+    return this.recipeService.getAll(name, categoryId).pipe(share());
   }
 
-  private loadRecipes() {
-    this.recipeService.getAll(this.selectedRecipeFilter, this.selectedCategoryId).pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.recipeData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all recipe entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all recipe entries complete');
-      }
-    });
-    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.categoryData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all category entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all category entries complete');
-      }
-    });
+  private loadCategories(): Observable<GetCategoryDto[]> {
+    return this.categoryService.getAll().pipe(share());
   }
 
-  show(recipeId: any) {
+  filterData() {
+    this.recipes = this.loadRecipes(this.selectedRecipeFilter, this.selectedCategory?.id);
+  }
+
+  showRecipeDialog(recipe: GetRecipeDto) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Recipe Details',
       width: '90%',
@@ -68,16 +51,16 @@ export class HomeComponent implements OnInit, OnDestroy {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        id: recipeId
+        recipeId: recipe.id
       }
     });
 
     this.ref.onClose.subscribe((recipe: GetRecipeDto) => {
       if (recipe) {
-        const index = this.recipeData.indexOf(recipe);
-        if (index > -1) {
-          this.recipeData[index] = recipe;
-        }
+        // const index = this.recipes.indexOf(recipe);
+        // if (index > -1) {
+        //   this.recipes[index] = of(recipe);
+        // }
       }
     });
 
@@ -86,7 +69,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSortChange(event: any) {
-    this.selectedCategoryId = event.value.id;
+  showCreateDialog() {
+    this.ref = this.dialogService.open(RecipeComponent, {
+      header: 'Create a Recipe',
+      width: '90%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+        recipeId: 0
+      }
+    });
+
+    this.ref.onClose.subscribe((recipe: RecipeDto) => {
+      if (recipe) {
+        this.messageService.add({ severity: 'info', summary: 'Recipe created', detail: recipe.name });
+      }
+    });
+
+    this.ref.onMaximize.subscribe((value) => {
+      this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+    });
   }
 }

@@ -11,7 +11,7 @@
             _recipeIngredientService = recipeIngredientService;
         }
 
-        public async Task<GetRecipeDto?> Get(int id)
+        public async Task<RecipeDto?> Get(int id)
         {
             var recipe = await _context.Recipe
                 .Include(r => r.ImageGallery)
@@ -19,10 +19,10 @@
                     .ThenInclude(ri => ri.Ingredient)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            return recipe == null ? null : _mapper.Map<GetRecipeDto>(recipe);
+            return recipe == null ? null : _mapper.Map<RecipeDto>(recipe);
         }
 
-        public async Task<IEnumerable<GetRecipeDto>> GetAll(string name, int categoryId)
+        public async Task<IEnumerable<GetRecipeDto>> GetAll(string? name, int? categoryId)
         {
             IQueryable<Recipe> query = _context.Recipe;
 
@@ -44,7 +44,7 @@
             return recipes;
         }
 
-        public async IAsyncEnumerable<GetRecipeDto> GetAllAsync(string name, int categoryId)
+        public async IAsyncEnumerable<GetRecipeDto> GetAllAsync(string? name, int? categoryId)
         {
             IQueryable<Recipe> query = _context.Recipe;
 
@@ -71,6 +71,10 @@
 
         public async Task<RecipeDto?> Save(RecipeDto recipeDto)
         {
+            List<RecipeIngredientDto> recipeIngredient = (List<RecipeIngredientDto>)recipeDto.RecipeIngredients;
+            recipeIngredient.ForEach(e => e.Ingredient = null);
+            recipeDto.RecipeIngredients = recipeIngredient;
+
             var recipe = _mapper.Map<Recipe>(recipeDto);
 
             if (recipe.Id <= 0)

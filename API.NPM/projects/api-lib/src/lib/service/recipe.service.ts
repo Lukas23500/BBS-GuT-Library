@@ -19,23 +19,23 @@ export class RecipeService extends ServiceBase {
 
   private readonly serviceUrl: string;
 
-  public get(id: number): Observable<GetRecipeDto> {
-    return this.http.get<GetRecipeDto>(`${this.serviceUrl}/Get/${id}`, {
+  public get(id: number): Observable<RecipeDto> {
+    return this.http.get<RecipeDto>(`${this.serviceUrl}/Get/${id}`, {
       headers: this.generateHeaders(),
     });
   }
 
-  public getAll(name: string, categoryId: number): Observable<GetRecipeDto[]> {
+  public getAll(name?: string, categoryId?: number): Observable<GetRecipeDto[]> {
     return this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll`, {
-      params: new HttpParams().append('name', name).append('categoryId', categoryId),
+      params: this.generateParams(name, categoryId),
       headers: this.generateHeaders(),
     });
   }
 
-  public getAllAsync(name: string, categoryId: number): Promise<GetRecipeDto[]> {
+  public getAllAsync(name?: string, categoryId?: number): Promise<GetRecipeDto[]> {
     return lastValueFrom(
       this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll/Async`, {
-        params: new HttpParams().append('name', name).append('categoryId', categoryId),
+        params: this.generateParams(name, categoryId),
         headers: this.generateHeaders(),
       })
     );

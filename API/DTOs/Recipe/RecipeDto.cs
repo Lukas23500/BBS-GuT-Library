@@ -20,7 +20,6 @@
         [Range(0, 5)]
         public int Rating { get; set; }
 
-        [Required]
         public required string ThumbnailUrl { get; set; }
 
         [Required]

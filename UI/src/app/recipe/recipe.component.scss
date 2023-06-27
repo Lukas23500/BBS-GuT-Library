@@ -1,57 +1,75 @@
-.recipe_wrapper{
-  & .header_wrapper{
+.recipe_wrapper {
+  & .header_wrapper {
     display: flex;
     justify-content: space-between;
 
-    & .difficultyLevel_wrapper, .category_wrapper{
+    & .difficultyLevel_wrapper,
+    .category_wrapper {
       width: 16rem;
       display: flex;
       justify-content: end;
     }
 
-    & p-rating{
+    & p-rating {
       display: flex;
       align-items: center;
     }
 
-    & input{
+    & input {
       width: 32rem;
+    }
+
+    & .input_preptime {
+      max-width: 10rem !important;
     }
   }
 
-  & .instruction_wrapper{
+  & .instruction_wrapper {
     padding: 2rem 0 2rem 0;
 
-    & textarea{
+    & textarea {
       width: 100%;
     }
   }
 
-  & .content_wrapper{
+  & .content_wrapper {
     display: flex;
     flex-direction: row;
     max-height: 24rem;
     overflow-y: auto;
     overflow-x: hidden;
 
-    & .content{
+    & .content {
       display: flex;
       flex-direction: column;
     }
 
-    & .content_left{
-      padding-right: 2rem;
-      border-left: 1px solid #dee2e6;
+    & .content_left {
+      padding-right: 1rem;
+      justify-content: center;
+      border-right: 1px solid #dee2e6;
+      width: 50%;
+      height: 100%;
+
+      & .card {
+        padding: unset !important;
+      }
     }
 
-    & .content_right{
-      //padding-left: 2rem;
-      display: flex;
+    & .content_right {
+      // padding-left: 1rem;
       justify-content: center;
       width: 100%;
       height: 100%;
 
-      & .card{
+      & .no_recipeIngredients {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: flex-start;
+      }
+
+      & .card {
         padding: 1rem;
         & ::ng-deep th:last-child {
           text-align: center !important;
@@ -60,16 +78,16 @@
     }
   }
 
-  & .footer_wrapper{
+  & .footer_wrapper {
     padding-top: 2rem;
     display: flex;
     justify-content: end;
 
-    & .delete_btn{
+    & .delete_btn {
       margin-right: auto;
     }
 
-    & .back_btn{
+    & .back_btn {
       margin-right: 1rem;
     }
   }

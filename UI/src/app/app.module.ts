@@ -34,6 +34,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     InputTextModule,
     CheckboxModule,
     RadioButtonModule,
-    InputTextareaModule
+    InputTextareaModule,
+    ImageModule
   ],
   providers: [
     DialogService,
