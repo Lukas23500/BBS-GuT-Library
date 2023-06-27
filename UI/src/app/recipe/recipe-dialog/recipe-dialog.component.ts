@@ -1,17 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GetIngredientDto, IngredientDto, IngredientService, RecipeIngredientDto } from 'api-lib';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, share, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-dialog',
   templateUrl: './recipe-dialog.component.html',
-  styleUrls: ['./recipe-dialog.component.scss']
+  styleUrls: ['./recipe-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class RecipeDialogComponent implements OnDestroy, OnInit {
 
   public newRecipeIngredient: RecipeIngredientDto = {} as RecipeIngredientDto;
-  public ingredientData: GetIngredientDto[] = [];
+  public ingredients: Observable<GetIngredientDto[]> = new Observable<GetIngredientDto[]>;
   public selectedIngredient: IngredientDto = {} as IngredientDto;
   public selectedIngredientName: string = '';
   private onDestroy: Subject<void> = new Subject<void>();
@@ -23,8 +24,7 @@ export class RecipeDialogComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.newRecipeIngredient = {} as RecipeIngredientDto;
-    this.loadIngredients();
+    this.ingredients = this.loadIngredients();
   }
 
   ngOnDestroy(): void {
@@ -32,22 +32,13 @@ export class RecipeDialogComponent implements OnDestroy, OnInit {
     this.onDestroy.complete();
   }
 
-  private loadIngredients() {
-    this.ingredientService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.ingredientData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all ingredient entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all ingredient entries complete');
-      }
-    });
+  private loadIngredients(): Observable<GetIngredientDto[]> {
+    return this.ingredientService.getAll().pipe(share());
   }
 
   public saveNewEntry() {
     this.newRecipeIngredient.ingredient = this.selectedIngredient;
+    this.newRecipeIngredient.ingredientId = this.selectedIngredient.id;
     this.ref.close(this.newRecipeIngredient);
   }
 }

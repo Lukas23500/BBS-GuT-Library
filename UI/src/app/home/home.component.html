@@ -1,54 +1,59 @@
-<ng-container *ngIf="(categories | async) as categories">
-  <ng-container *ngIf="(recipes | async) as recipes">
-    <div class="home_wrapper" style="padding-top: 16px;">
-      <div class="card">
-        <p-dataView #dv [value]="recipes" [rows]="5" [paginator]="true">
-          <ng-template pTemplate="header">
-            <div class="flex flex-column md:flex-row md:justify-content-between">
+<ng-container *ngIf="(recipes | async) as recipes; else noRecipes">
+  <div class="home_wrapper" style="padding-top: 16px;">
+    <div class="card">
+      <p-dataView #dv [value]="recipes" [rows]="5" [paginator]="true">
+        <ng-template pTemplate="header">
+          <div class="flex flex-column md:flex-row md:justify-content-start">
+            <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (keyup.enter)="filterData()"
+              placeholder="Search Recipe" />
+            <ng-container *ngIf="(categories | async) as categories">
               <p-dropdown [options]="categories" optionLabel="title" placeholder="Sort By Category"
-                (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
-              <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" placeholder="Search Recipe" />
-            </div>
-          </ng-template>
-          <ng-template let-recipe pTemplate="listItem">
-            <div class="col-12">
-              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                  [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + recipe.imageGallery"
-                  [alt]="recipe.name" />
-                <div class="flex flex-column sm:flex-row align-items-center xl:align-items-start flex-1 gap-4">
-                  <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                    <div class="text-2xl font-bold text-900">{{ recipe.name }}</div>
-                    <p-rating [(ngModel)]="recipe.rating" [readonly]="true" [cancel]="false"></p-rating>
-                    <div class="flex align-items-center gap-3">
-                      <span class="flex align-items-center gap-2">
-                        <button *ngIf="recipe.difficultyLevel == 0" pButton icon="pi"
-                          class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Simple</button>
-                        <button *ngIf="recipe.difficultyLevel == 1" pButton icon="pi"
-                          class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Normal</button>
-                        <button *ngIf="recipe.difficultyLevel == 2" pButton icon="pi"
-                          class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Nifty</button>
-                      </span>
-                    </div>
+                [(ngModel)]="selectedCategory" (onChange)="filterData()" styleClass="mb-2 md:mb-0" />
+            </ng-container>
+            <p-button class="button_header" (click)="showCreateDialog()" label="New Recipe"></p-button>
+          </div>
+        </ng-template>
+        <ng-template let-recipe pTemplate="listItem">
+          <div class="col-12">
+            <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+              <!-- <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + recipe.imageGallery"
+                [alt]="recipe.name" /> -->
+              <div class="flex flex-column sm:flex-row align-items-center xl:align-items-start flex-1 gap-4">
+                <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                  <div class="text-2xl font-bold text-900">{{ recipe.name }}</div>
+                  <p-rating [(ngModel)]="recipe.rating" [readonly]="true" [cancel]="false"></p-rating>
+                  <div class="flex align-items-center gap-3">
+                    <span class="flex align-items-center gap-2">
+                      <button *ngIf="recipe.difficultyLevel == 0" pButton icon="pi"
+                        class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Simple</button>
+                      <button *ngIf="recipe.difficultyLevel == 1" pButton icon="pi"
+                        class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Normal</button>
+                      <button *ngIf="recipe.difficultyLevel == 2" pButton icon="pi"
+                        class="md:align-self-end mb-2 p-button-rounded difficultyLevel">Nifty</button>
+                    </span>
                   </div>
-                  <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 instruction">
-                    <span>{{ recipe.instruction }}</span>
-                  </div>
-                  <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 edit_button">
-                    <button pButton icon="pi pi-pencil" class="md:align-self-end mb-2 p-button-rounded"
-                      (click)="show(recipe, categories)"></button>
-                  </div>
+                </div>
+                <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 instruction">
+                  <span>{{ recipe.instruction }}</span>
+                </div>
+                <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 edit_button">
+                  <button pButton icon="pi pi-pencil" class="md:align-self-end mb-2 p-button-rounded"
+                    (click)="showRecipeDialog(recipe)"></button>
                 </div>
               </div>
             </div>
-          </ng-template>
-        </p-dataView>
-      </div>
-      <div class="no_results" *ngIf="recipes.length == 0">
-        <p-card>
-          <p>No recipes</p>
-        </p-card>
-      </div>
+          </div>
+        </ng-template>
+      </p-dataView>
     </div>
-  </ng-container>
+  </div>
 </ng-container>
+
+<ng-template #noRecipes>
+  <div class="no_results">
+    <p-card>
+      <p>No recipes</p>
+    </p-card>
+  </div>
+</ng-template>

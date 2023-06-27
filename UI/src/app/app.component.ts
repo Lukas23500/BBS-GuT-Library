@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  templateUrl: './app.component.html',
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class AppComponent {
   constructor(private primengConfig: PrimeNGConfig) { }

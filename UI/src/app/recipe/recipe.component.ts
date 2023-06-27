@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { DifficultyLevel, GetRecipeDto, RecipeDto, RecipeIngredientDto, RecipeService, CategoryService, GetCategoryDto, ImageGalleryDto } from 'api-lib';
+import { RecipeDto, RecipeIngredientDto, RecipeService, GetCategoryDto, ImageGalleryDto, CategoryService, DifficultyLevel, GetIngredientDto } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { Observable, Subject, of, share, takeUntil } from 'rxjs';
@@ -10,18 +10,14 @@ import { Observable, Subject, of, share, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-recipe',
   templateUrl: './recipe.component.html',
-  styleUrls: ['./recipe.component.scss']
+  styleUrls: ['./recipe.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class RecipeComponent implements OnInit, OnDestroy {
-  public get DifficultyLevel(): any {
-    return Object.entries(DifficultyLevel);
-  }
-
-
-  // public recipe: GetRecipeDto = {} as GetRecipeDto;
+  public difficultyLevel: any;
   public recipe: Observable<RecipeDto> = new Observable<RecipeDto>;
   public recipeId: number = 0;
-  public categories: GetCategoryDto[] = [];
+  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>;
   private onDestroy: Subject<void> = new Subject<void>();
 
   responsiveOptions: any[] = [
@@ -45,12 +41,15 @@ export class RecipeComponent implements OnInit, OnDestroy {
     public ref2: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private recipeService: RecipeService,
+    private categoryService: CategoryService,
     private dialogService: DialogService,
-  ) { }
+  ) {
+    this.difficultyLevel = Object.values(DifficultyLevel);
+  }
 
   ngOnInit() {
     this.recipeId = JSON.parse(this.config.data.recipeId);
-    this.categories = JSON.parse(this.config.data.categories);
+    this.categories = this.loadCategories();
 
     if (this.recipeId == 0) {
       this.recipe = this.initNewRecipe();
@@ -86,6 +85,10 @@ export class RecipeComponent implements OnInit, OnDestroy {
     return this.recipeService.get(this.recipeId).pipe(share());
   }
 
+  private loadCategories(): Observable<GetCategoryDto[]> {
+    return this.categoryService.getAll().pipe(share());
+  }
+
   public deleteRecipeIngredientRow(recipe: RecipeDto, rowData: RecipeIngredientDto) {
     const index = recipe.recipeIngredients.indexOf(rowData);
     if (index > -1) {
@@ -94,7 +97,14 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public onUpload(event: FileUploadEvent) {
-    this.messageService.add({ severity: 'info', summary: 'Image uploaded', detail: 'File Uploaded with Basic Mode' });
+    let fileList: File[] = event.files;
+
+    // for (let file in fileList) {
+    //   let fileReader = new FileReader();
+    //   fileReader.onload = (e) => {
+    //   };
+    //   fileReader.readAsText();
+    // }
   }
 
   public close() {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IngredientDto, IngredientService } from 'api-lib';
 import { Subject, takeUntil } from 'rxjs';
@@ -6,7 +6,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-ingredients-dialog',
   templateUrl: './ingredients-dialog.component.html',
-  styleUrls: ['./ingredients-dialog.component.scss']
+  styleUrls: ['./ingredients-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class IngredientsDialogComponent implements OnInit, OnDestroy {
 
