@@ -59,12 +59,8 @@ export class HomeComponent implements OnInit {
       }
     });
 
-    this.ref.onClose.subscribe((recipe: GetRecipeDto) => {
-      if (recipe) {
-        // const index = recipes.findIndex(e => e.id == recipe.id);
-        // if (index > -1) {
-        //   recipes[index] = recipe;
-        // }
+    this.ref.onClose.subscribe((recipeID: number) => {
+      if (recipeID >= 0) {
         this.recipes = this.loadRecipes();
       }
     });

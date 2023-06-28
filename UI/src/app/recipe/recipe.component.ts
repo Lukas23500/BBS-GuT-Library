@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { RecipeDto, RecipeIngredientDto, RecipeService, GetCategoryDto, ImageGalleryDto, CategoryService, DifficultyLevel, GetIngredientDto, UploadImageGalleryDto, ImageGalleryService } from 'api-lib';
+import { RecipeDto, RecipeIngredientDto, RecipeService, GetCategoryDto, ImageGalleryDto, CategoryService, DifficultyLevel, UploadImageGalleryDto, ImageGalleryService } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { Observable, Subject, of, share, takeUntil } from 'rxjs';
@@ -100,7 +100,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
   public close() {
-    this.ref.close();
+    this.ref.close(-1);
   }
 
   public showRecipeIngredientDialog(recipe: RecipeDto) {
@@ -130,7 +130,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
         if (this.uploadImageGallery.fileBase64?.length > 0) {
           this.uploadImage(recipe);
         }
-        this.ref.close(res);
+        this.ref.close(res.id);
       },
       error: (exception) => {
         console.log('errors at saving new recipe entry: ' + exception);
@@ -148,7 +148,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         console.log('successfully deleted recipe entry');
-        this.ref.close(recipe);
+        this.ref.close(recipe.id);
       },
     });
   }
@@ -166,11 +166,11 @@ export class RecipeComponent implements OnInit, OnDestroy {
     const file: File = fileList[0];
 
     let fileReader = new FileReader();
-    fileReader.onload = (e: any) => {
-      const fileBase64: string = e.target.result;
+    fileReader.onloadend = () => {
+      const fileBase64: string = fileReader.result as string;
       this.uploadImageGallery.fileBase64 = fileBase64;
     };
-    fileReader.readAsDataURL(file);
+    fileReader.readAsText(file);
 
     this.uploadImageGallery = {
       id: 0,
