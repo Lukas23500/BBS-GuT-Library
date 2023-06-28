@@ -112,12 +112,11 @@
       </div>
 
     </div>
-
-    <div class="footer_wrapper">
-      <p-button label="Delete" icon="pi pi-trash" styleClass="p-button-danger" class="delete_btn" *ngIf="recipe.id > 0"
-        (click)="deleteRecipe(recipe)"></p-button>
-      <p-button label="Back" class="back_btn" (click)="close()"></p-button>
-      <p-button label="Save" (click)="saveRecipe(recipe)"></p-button>
-    </div>
+  </div>
+  <div class="footer_wrapper">
+    <p-button label="Delete" icon="pi pi-trash" styleClass="p-button-danger" class="delete_btn" *ngIf="recipe.id > 0"
+      (click)="deleteRecipe(recipe)"></p-button>
+    <p-button label="Back" class="back_btn" (click)="close()"></p-button>
+    <p-button label="Save" (click)="saveRecipe(recipe)"></p-button>
   </div>
 </ng-container>

@@ -1,4 +1,8 @@
 .recipe_wrapper {
+  overflow-y: auto;
+  max-height: calc(100vh - 18rem);
+  //asd
+
   & .header_wrapper {
     display: flex;
     justify-content: space-between;
@@ -35,7 +39,6 @@
   & .content_wrapper {
     display: flex;
     flex-direction: row;
-    max-height: 24rem;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -45,10 +48,9 @@
     }
 
     & .content_left {
-      padding-right: 1rem;
+      padding-right: 0.5rem;
       justify-content: center;
-      border-right: 1px solid #dee2e6;
-      width: 50%;
+      width: 40%;
       height: 100%;
 
       & .card {
@@ -57,9 +59,10 @@
     }
 
     & .content_right {
-      padding-left: 1rem;
+      border-left: 1px solid #dee2e6;
+      padding-left: 0.5rem;
       justify-content: center;
-      width: 50%;
+      width: 60%;
       height: 100%;
 
       & .no_recipeIngredients {
@@ -77,18 +80,17 @@
       }
     }
   }
+}
+.footer_wrapper {
+  padding-top: 2rem;
+  display: flex;
+  justify-content: end;
 
-  & .footer_wrapper {
-    padding-top: 2rem;
-    display: flex;
-    justify-content: end;
+  & .delete_btn {
+    margin-right: auto;
+  }
 
-    & .delete_btn {
-      margin-right: auto;
-    }
-
-    & .back_btn {
-      margin-right: 1rem;
-    }
+  & .back_btn {
+    margin-right: 1rem;
   }
 }
