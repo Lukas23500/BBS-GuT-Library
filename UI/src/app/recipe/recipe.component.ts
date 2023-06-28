@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { FileUploadEvent } from 'primeng/fileupload';
-import { RecipeDto, RecipeIngredientDto, RecipeService, GetCategoryDto, ImageGalleryDto, CategoryService, DifficultyLevel, GetIngredientDto } from 'api-lib';
+import { RecipeDto, RecipeIngredientDto, RecipeService, GetCategoryDto, ImageGalleryDto, CategoryService, DifficultyLevel, GetIngredientDto, UploadImageGalleryDto, ImageGalleryService } from 'api-lib';
 import { MessageService } from 'primeng/api';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { Observable, Subject, of, share, takeUntil } from 'rxjs';
@@ -14,11 +14,13 @@ import { Observable, Subject, of, share, takeUntil } from 'rxjs';
   encapsulation: ViewEncapsulation.Emulated
 })
 export class RecipeComponent implements OnInit, OnDestroy {
-  public difficultyLevel: any;
+  private onDestroy: Subject<void> = new Subject<void>();
+  private uploadImageGallery: UploadImageGalleryDto = {} as UploadImageGalleryDto;
+  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>;
+  public difficultyLevel: any[];
   public recipe: Observable<RecipeDto> = new Observable<RecipeDto>;
   public recipeId: number = 0;
-  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>;
-  private onDestroy: Subject<void> = new Subject<void>();
+  public selectedCategory: GetCategoryDto = {} as GetCategoryDto;
 
   responsiveOptions: any[] = [
     {
@@ -42,6 +44,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
     public config: DynamicDialogConfig,
     private recipeService: RecipeService,
     private categoryService: CategoryService,
+    private imageGalleryService: ImageGalleryService,
     private dialogService: DialogService,
   ) {
     this.difficultyLevel = Object.values(DifficultyLevel);
@@ -96,17 +99,6 @@ export class RecipeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onUpload(event: FileUploadEvent) {
-    let fileList: File[] = event.files;
-
-    // for (let file in fileList) {
-    //   let fileReader = new FileReader();
-    //   fileReader.onload = (e) => {
-    //   };
-    //   fileReader.readAsText();
-    // }
-  }
-
   public close() {
     this.ref.close();
   }
@@ -134,12 +126,17 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   public saveRecipe(recipe: RecipeDto) {
     this.recipeService.save(recipe).pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (res) => {
+        if (this.uploadImageGallery.fileBase64?.length > 0) {
+          this.uploadImage(recipe);
+        }
+        this.ref.close(res);
+      },
       error: (exception) => {
-        console.log('error by saving new recipe entry: ' + exception);
+        console.log('errors at saving new recipe entry: ' + exception);
       },
       complete: () => {
         console.log('successfully saved recipe entry');
-        this.ref.close(recipe);
       },
     });
   }
@@ -147,7 +144,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   public deleteRecipe(recipe: RecipeDto) {
     this.recipeService.delete(recipe.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-        console.log('error by deleting new recipe entry: ' + exception);
+        console.log('errors at deleting new recipe entry: ' + exception);
       },
       complete: () => {
         console.log('successfully deleted recipe entry');
@@ -156,11 +153,50 @@ export class RecipeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSortChange(recipe: RecipeDto, event: any) {
+  public onCategoryChange(recipe: RecipeDto, event: any) {
     recipe.categoryId = event.value.id;
   }
 
   public onDifficultyChange(recipe: RecipeDto, event: any) {
     recipe.difficultyLevel = event.value.id;
+  }
+
+  public onUploadNewImage(recipe: RecipeDto, event: FileUploadEvent) {
+    let fileList: File[] = event.files;
+    const file: File = fileList[0];
+
+    let fileReader = new FileReader();
+    fileReader.onload = (e: any) => {
+      const fileBase64: string = e.target.result;
+      this.uploadImageGallery.fileBase64 = fileBase64;
+    };
+    fileReader.readAsDataURL(file);
+
+    this.uploadImageGallery = {
+      id: 0,
+      recipeId: 0,
+      type: file.type,
+      fileName: file.name,
+      fileBase64: ''
+    };
+  }
+
+  private uploadImage(recipe: RecipeDto) {
+    this.uploadImageGallery.id = recipe.imageGallery.length > 0 ? recipe.imageGallery[0].id : 0
+    this.uploadImageGallery.recipeId = recipe.id;
+
+    this.imageGalleryService.upload(this.uploadImageGallery).pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (res) => {
+        this.uploadImageGallery = {} as UploadImageGalleryDto;
+
+        recipe.thumbnailUrl = res.imageUrl;
+        this.saveRecipe(recipe);
+
+        console.log('successfully uploaded image');
+      },
+      error: (exception) => {
+        console.log('errors at uploading image ' + exception);
+      }
+    });
   }
 }

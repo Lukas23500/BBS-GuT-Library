@@ -11,8 +11,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class IngredientsDialogComponent implements OnInit, OnDestroy {
 
-  public newIngredient: IngredientDto = {} as IngredientDto;
   private onDestroy: Subject<void> = new Subject<void>();
+  public newIngredient: IngredientDto = {} as IngredientDto;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -31,12 +31,14 @@ export class IngredientsDialogComponent implements OnInit, OnDestroy {
 
   public saveNewEntry() {
     this.ingredientService.save(this.newIngredient).pipe(takeUntil(this.onDestroy)).subscribe({
+      next: (res) => {
+        this.ref.close(res);
+      },
       error: (exception) => {
-        console.log('error by creating new ingredient entry: ' + exception);
+        console.log('errors at creating new ingredient entry: ' + exception);
       },
       complete: () => {
         console.log('successfully created ingredient entry');
-        this.ref.close(this.newIngredient);
       },
     });
   }

@@ -1,7 +1,9 @@
-<div class="categories_wrapper">
-  <div class="card" *ngIf="categoryData.length > 0">
-    <p-toast></p-toast>
-    <p-table [value]="categoryData" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
+<ng-container *ngIf="(categories | async) as categories; else noCategories">
+  <div class="categories_wrapper">
+    <div class="card" *ngIf="categories.length > 0">
+      <p-toast></p-toast>
+      <p-table [value]="categories" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}" [paginator]="true"
+        [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
         <ng-template pTemplate="header">
           <tr>
             <th style="min-width:15rem">
@@ -11,38 +13,46 @@
               </div>
             </th>
             <th style="width:20%" class="add_button_wrapper">
-              <p-button (onClick)="show()">Add</p-button>
+              <p-button (onClick)="show(categories)">Add</p-button>
             </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-            <tr [pEditableRow]="rowData">
-                <td>
-                    <p-cellEditor>
-                        <ng-template pTemplate="input">
-                            <input pInputText type="text" [(ngModel)]="rowData.title">
-                        </ng-template>
-                        <ng-template pTemplate="output">
-                            {{rowData.title}}
-                        </ng-template>
-                    </p-cellEditor>
-                </td>
-                <td>
-                    <div class="flex align-items-center justify-content-center gap-2">
-                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="saveRow(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger"></button>
-                        <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="deleteRow(rowData)" class="p-button-rounded p-button-text p-button-danger"></button>
-                    </div>
-                </td>
-            </tr>
+          <tr [pEditableRow]="rowData">
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.title">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{rowData.title}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>
+              <div class="flex align-items-center justify-content-center gap-2">
+                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                  (click)="saveRow(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                  class="p-button-rounded p-button-text p-button-danger"></button>
+                <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="deleteRow(rowData, categories)"
+                  class="p-button-rounded p-button-text p-button-danger"></button>
+              </div>
+            </td>
+          </tr>
         </ng-template>
-    </p-table>
+      </p-table>
+    </div>
   </div>
-  <div class="no_results" *ngIf="categoryData.length == 0">
+</ng-container>
+
+<ng-template #noCategories>
+  <div class="no_results">
     <p-card>
       <p>No categories</p>
       <p-button (onClick)="show()">Add</p-button>
     </p-card>
   </div>
-</div>
+</ng-template>

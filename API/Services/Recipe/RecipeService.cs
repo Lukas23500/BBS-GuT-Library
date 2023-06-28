@@ -71,11 +71,17 @@
 
         public async Task<RecipeDto?> Save(RecipeDto recipeDto)
         {
-            List<RecipeIngredientDto> recipeIngredient = (List<RecipeIngredientDto>)recipeDto.RecipeIngredients;
-            recipeIngredient.ForEach(e => e.Ingredient = null);
-            recipeDto.RecipeIngredients = recipeIngredient;
+            //don't save relation
+            if (recipeDto.RecipeIngredients?.Count > 0)
+            {
+                foreach (var item in recipeDto.RecipeIngredients)
+                {
+                    item.Ingredient = null;
+                }
+            }
 
             var recipe = _mapper.Map<Recipe>(recipeDto);
+
 
             if (recipe.Id <= 0)
             {

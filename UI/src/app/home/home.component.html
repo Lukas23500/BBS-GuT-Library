@@ -7,18 +7,35 @@
             <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (keyup.enter)="filterData()"
               placeholder="Search Recipe" />
             <ng-container *ngIf="(categories | async) as categories">
-              <p-dropdown [options]="categories" optionLabel="title" placeholder="Sort By Category"
-                [(ngModel)]="selectedCategory" (onChange)="filterData()" styleClass="mb-2 md:mb-0" />
+
+              <p-dropdown [options]="categories" [(ngModel)]="selectedCategory"
+                (onChange)="filterData()" optionLabel="title" [filter]="true" filterBy="title"
+                [showClear]="true" placeholder="Sort By Category">
+                <ng-template pTemplate="selectedItem">
+                  <div class="flex align-items-center gap-2" *ngIf="selectedCategory?.title != ''">
+                    <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                    [class]="'flag flag-' + selectedCategory?.title?.toLowerCase()" style="width: 18px" />
+                    <div>{{ selectedCategory?.title }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-category pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                      [class]="'flag flag-' + category.title.toLowerCase()" style="width: 18px" />
+                    <div>{{ category.title }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
             </ng-container>
-            <p-button class="button_header" (click)="showCreateDialog()" label="New Recipe"></p-button>
+            <p-button class="button_header" (click)="showCreateDialog(recipes)" label="New Recipe"></p-button>
           </div>
         </ng-template>
         <ng-template let-recipe pTemplate="listItem">
           <div class="col-12">
             <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-              <!-- <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + recipe.imageGallery"
-                [alt]="recipe.name" /> -->
+              <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                [src]=""
+                [alt]="recipe.name" />
               <div class="flex flex-column sm:flex-row align-items-center xl:align-items-start flex-1 gap-4">
                 <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                   <div class="text-2xl font-bold text-900">{{ recipe.name }}</div>
@@ -39,7 +56,7 @@
                 </div>
                 <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2 edit_button">
                   <button pButton icon="pi pi-pencil" class="md:align-self-end mb-2 p-button-rounded"
-                    (click)="showRecipeDialog(recipe)"></button>
+                    (click)="showRecipeDialog(recipe, recipes)"></button>
                 </div>
               </div>
             </div>

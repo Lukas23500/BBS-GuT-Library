@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
-import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto, CategoryDto } from 'api-lib';
-import { Observable, Subject, of, share, takeUntil } from 'rxjs';
+import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto, CategoryDto, API_BASE_URL } from 'api-lib';
+import { Observable, of, share } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +14,7 @@ import { Observable, Subject, of, share, takeUntil } from 'rxjs';
 export class HomeComponent implements OnInit {
 
   private ref: DynamicDialogRef = new DynamicDialogRef;
+  public apiBaseUrl: string = '';
   public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>();
   public recipes: Observable<GetRecipeDto[]> = new Observable<GetRecipeDto[]>;
   public selectedCategory?: CategoryDto;
@@ -23,8 +24,11 @@ export class HomeComponent implements OnInit {
     public dialogService: DialogService,
     public messageService: MessageService,
     private recipeService: RecipeService,
-    private categoryService: CategoryService
-  ) { }
+    private categoryService: CategoryService,
+    @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    if (baseUrl) this.apiBaseUrl = baseUrl;
+  }
 
   ngOnInit(): void {
     this.recipes = this.loadRecipes();
@@ -43,7 +47,7 @@ export class HomeComponent implements OnInit {
     this.recipes = this.loadRecipes(this.selectedRecipeFilter, this.selectedCategory?.id);
   }
 
-  showRecipeDialog(recipe: GetRecipeDto) {
+  showRecipeDialog(recipe: GetRecipeDto, recipes: GetRecipeDto[]) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Recipe Details',
       width: '90%',
@@ -57,10 +61,11 @@ export class HomeComponent implements OnInit {
 
     this.ref.onClose.subscribe((recipe: GetRecipeDto) => {
       if (recipe) {
-        // const index = this.recipes.indexOf(recipe);
+        // const index = recipes.findIndex(e => e.id == recipe.id);
         // if (index > -1) {
-        //   this.recipes[index] = of(recipe);
+        //   recipes[index] = recipe;
         // }
+        this.recipes = this.loadRecipes();
       }
     });
 
@@ -69,7 +74,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  showCreateDialog() {
+  showCreateDialog(recipes: GetRecipeDto[]) {
     this.ref = this.dialogService.open(RecipeComponent, {
       header: 'Create a Recipe',
       width: '90%',
@@ -83,6 +88,7 @@ export class HomeComponent implements OnInit {
 
     this.ref.onClose.subscribe((recipe: RecipeDto) => {
       if (recipe) {
+        this.recipes = this.loadRecipes();
         this.messageService.add({ severity: 'info', summary: 'Recipe created', detail: recipe.name });
       }
     });
