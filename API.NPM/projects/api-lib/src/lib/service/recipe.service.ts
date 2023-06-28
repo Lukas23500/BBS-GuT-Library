@@ -27,7 +27,7 @@ export class RecipeService extends ServiceBase {
 
   public getAll(name?: string, categoryId?: number): Observable<GetRecipeDto[]> {
     return this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll`, {
-      params: this.generateParams(name, categoryId),
+      params: this.generateParams(name ? ['name', name] : undefined, categoryId ? ['categoryId', categoryId] : undefined),
       headers: this.generateHeaders(),
     });
   }
@@ -35,7 +35,7 @@ export class RecipeService extends ServiceBase {
   public getAllAsync(name?: string, categoryId?: number): Promise<GetRecipeDto[]> {
     return lastValueFrom(
       this.http.get<GetRecipeDto[]>(`${this.serviceUrl}/GetAll/Async`, {
-        params: this.generateParams(name, categoryId),
+        params: this.generateParams(name ? ['name', name] : undefined, categoryId ? ['categoryId', categoryId] : undefined),
         headers: this.generateHeaders(),
       })
     );

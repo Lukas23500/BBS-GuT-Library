@@ -3,7 +3,7 @@ import { CategoryDto, CategoryService, GetCategoryDto } from 'api-lib';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, share, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -13,9 +13,9 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
 
-  private ref: DynamicDialogRef = new DynamicDialogRef;
-  public categoryData: GetCategoryDto[] = [];
   private onDestroy: Subject<void> = new Subject<void>();
+  private ref: DynamicDialogRef = new DynamicDialogRef;
+  public categories: Observable<GetCategoryDto[]> = new Observable<GetCategoryDto[]>;
 
   constructor(
     private categoryService: CategoryService,
@@ -24,7 +24,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadCategories();
+    this.categories = this.loadCategories();
   }
 
   ngOnDestroy(): void {
@@ -32,24 +32,14 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  private loadCategories() {
-    this.categoryService.getAll().pipe(takeUntil(this.onDestroy)).subscribe({
-      next: (data) => {
-        this.categoryData = data;
-      },
-      error: (exception) => {
-        console.log('error by loading all category entries: ' + exception);
-      },
-      complete: () => {
-        console.log('get all categoriy entries complete');
-      }
-    });
+  private loadCategories(): Observable<GetCategoryDto[]> {
+    return this.categoryService.getAll().pipe(share());
   }
 
   public saveRow(rowData: CategoryDto) {
     this.categoryService.save(rowData).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-        console.log('error by saving new category entry: ' + exception);
+        console.log('errors at saving new category entry: ' + exception);
       },
       complete: () => {
         console.log('successfully saved category entry');
@@ -57,22 +47,22 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteRow(rowData: CategoryDto) {
+  public deleteRow(rowData: CategoryDto, categories: GetCategoryDto[]) {
     this.categoryService.delete(rowData.id).pipe(takeUntil(this.onDestroy)).subscribe({
       error: (exception) => {
-        console.log('error by deleting new category entry: ' + exception);
+        console.log('errors at deleting new category entry: ' + exception);
       },
       complete: () => {
-        console.log('successfully deleted category entry');
-        const index = this.categoryData.indexOf(rowData);
+        const index = categories.indexOf(rowData);
         if (index > -1) {
-          this.categoryData.splice(index, 1);
+          categories.splice(index, 1);
         }
+        console.log('successfully deleted category entry');
       },
     });
   }
 
-  public show() {
+  public show(categories?: GetCategoryDto[]) {
     this.ref = this.dialogService.open(CategoriesDialogComponent, {
       header: 'Create a Category',
       width: '40%',
@@ -83,8 +73,9 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
     this.ref.onClose.subscribe((category: CategoryDto) => {
       if (category) {
+        categories?.push(category);
         this.messageService.add({ severity: 'info', summary: 'Category created', detail: category.title });
-        this.loadCategories();
+        //this.categories = this.loadCategories();
       }
     });
 

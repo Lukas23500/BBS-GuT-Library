@@ -125,6 +125,7 @@
                     return null;
                 }
 
+                File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, imageGallery.ImageUrl));
                 imageGallery.ImageUrl = await SaveImage(uploadImageGalleryDto.FileBase64, uploadImageGalleryDto.FileName);
 
                 _context.Entry(existingImageGallery).CurrentValues.SetValues(imageGallery);
@@ -230,7 +231,7 @@
                 await stream.WriteAsync(imageBytes);
 
                 // Return the file path relative to the wwwroot folder
-                return Path.Combine("images", fileName);
+                return Path.Combine("images", uniqueFileName);
             }
             catch (Exception)
             {

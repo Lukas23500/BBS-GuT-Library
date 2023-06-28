@@ -23,15 +23,15 @@ export class ServiceBase {
     return headers;
   }
 
-  protected generateParams(name?: string, categoryId?: number): HttpParams | undefined {
-    if (name && categoryId) {
-      const params = new HttpParams().set('name', name).append('categoryId', categoryId);
+  protected generateParams(param1?: [string, string], param2?: [string, number]): HttpParams | undefined {
+    if (param1 && param2) {
+      const params = new HttpParams().set(param1[0], param1[1]).append(param2[0], param2[1]);
       return params;
-    } else if (name && !categoryId) {
-      const params = new HttpParams().set('name', name);
+    } else if (param1 && !param2) {
+      const params = new HttpParams().set(param1[0], param1[1]);
       return params;
-    } else if (!name && categoryId) {
-      const params = new HttpParams().set('categoryId', categoryId);
+    } else if (!param1 && param2) {
+      const params = new HttpParams().set(param2[0], param2[1]);
       return params;
     } else {
       return undefined;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GetIngredientDto, IngredientDto, IngredientService, RecipeIngredientDto } from 'api-lib';
-import { Observable, Subject, share, takeUntil } from 'rxjs';
+import { Observable, Subject, share } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-dialog',

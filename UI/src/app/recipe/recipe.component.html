@@ -3,16 +3,35 @@
 
     <div class="header_wrapper">
       <p-rating [(ngModel)]="recipe.rating" [readonly]="false" [cancel]="false"></p-rating>
-      <input type="text" pInputText [(ngModel)]="recipe.prepTimeMinutes" class="input_preptime" placeholder="Preparation Time" />
+      <p-inputNumber inputId="integeronly" [(ngModel)]="recipe.prepTimeMinutes" class="input_preptime"
+        placeholder="Preparation Time" />
       <input type="text" pInputText [(ngModel)]="recipe.name" class="text-2xl font-bold text-900" placeholder="Title" />
       <ng-container *ngIf="(categories | async) as categories">
-        <div class="category_wrapper"><p-dropdown [options]="categories" optionLabel="title"
-            placeholder="Select Category" (onChange)="onSortChange(recipe, $event)" styleClass="mb-2 md:mb-0" />
+        <div class="category_wrapper">
+          <p-dropdown [options]="categories" [(ngModel)]="selectedCategory"
+            (onChange)="onCategoryChange(recipe, $event)" optionLabel="title" [filter]="true" filterBy="title"
+            [showClear]="true" placeholder="Select a Category">
+            <ng-template pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" *ngIf="selectedCategory.title != ''">
+                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                  [class]="'flag flag-' + selectedCategory.title.toLowerCase()" style="width: 18px" />
+                <div>{{ selectedCategory.title }}</div>
+              </div>
+            </ng-template>
+            <ng-template let-category pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                  [class]="'flag flag-' + category.title.toLowerCase()" style="width: 18px" />
+                <div>{{ category.title }}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
         </div>
       </ng-container>
-      <div class="difficultyLevel_wrapper"><p-dropdown [options]="difficultyLevel"
-          (onchange)="onDifficultyChange(recipe, $event)"
-          placeholder="Select Difficulty Level"></p-dropdown>
+      <div class="difficultyLevel_wrapper">
+        <p-dropdown [options]="difficultyLevel" [(ngModel)]="recipe.difficultyLevel"
+          placeholder="Select Difficulty Level">
+        </p-dropdown>
       </div>
     </div>
 
@@ -23,7 +42,7 @@
 
     <div class="content_wrapper">
 
-      <!-- <div class="content_left content">
+      <div class="content_left content">
         <div class="image_wrapper card flex justify-content-center" *ngIf="recipe.id != 0 || recipe.thumbnailUrl != ''">
           <p-image src="" alt="Image" width="300"
             [preview]="true"></p-image>
@@ -31,9 +50,9 @@
         <div class="card flex justify-content-center">
           <p-toast></p-toast>
           <p-fileUpload mode="basic" name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*"
-            [maxFileSize]="1000000" (onUpload)="onUpload($event)" [auto]="true" chooseLabel="Browse"></p-fileUpload>
+            [maxFileSize]="20000000" (onUpload)="onUploadNewImage(recipe, $event)" [auto]="true" chooseLabel="Browse"></p-fileUpload>
         </div>
-      </div> -->
+      </div>
 
       <div class="content_right content">
         <div class="card" *ngIf="recipe.recipeIngredients.length > 0">

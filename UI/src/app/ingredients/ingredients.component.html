@@ -1,7 +1,9 @@
-<div class="ingredients_wrapper">
-  <div class="card" *ngIf="ingredientData.length > 0">
-    <p-toast></p-toast>
-    <p-table [value]="ingredientData" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
+<ng-container *ngIf="(ingredients | async) as ingredients;else noIngredients">
+  <div class="ingredients_wrapper">
+    <div class="card" *ngIf="ingredients.length > 0">
+      <p-toast></p-toast>
+      <p-table [value]="ingredients" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+        [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
         <ng-template pTemplate="header">
           <tr>
             <th style="min-width:15rem">
@@ -11,38 +13,47 @@
               </div>
             </th>
             <th style="width:20%" class="add_button_wrapper">
-              <p-button (onClick)="show()">Add</p-button>
+              <p-button (onClick)="show(ingredients)">Add</p-button>
             </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-            <tr [pEditableRow]="rowData">
-                <td>
-                    <p-cellEditor>
-                        <ng-template pTemplate="input">
-                            <input pInputText type="text" [(ngModel)]="rowData.name">
-                        </ng-template>
-                        <ng-template pTemplate="output">
-                            {{rowData.name}}
-                        </ng-template>
-                    </p-cellEditor>
-                </td>
-                <td>
-                    <div class="flex align-items-center justify-content-center gap-2">
-                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="saveRow(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger"></button>
-                        <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="deleteRow(rowData)" class="p-button-rounded p-button-text p-button-danger"></button>
-                    </div>
-                </td>
-            </tr>
+          <tr [pEditableRow]="rowData">
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.name">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{rowData.name}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>
+              <div class="flex align-items-center justify-content-center gap-2">
+                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                  (click)="saveRow(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                  class="p-button-rounded p-button-text p-button-danger"></button>
+                <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                  (click)="deleteRow(rowData, ingredients)"
+                  class="p-button-rounded p-button-text p-button-danger"></button>
+              </div>
+            </td>
+          </tr>
         </ng-template>
-    </p-table>
+      </p-table>
+    </div>
   </div>
-  <div class="no_results" *ngIf="ingredientData.length == 0">
+</ng-container>
+
+<ng-template #noIngredients>
+  <div class="no_results">
     <p-card>
       <p>No categories</p>
       <p-button (onClick)="show()">Add</p-button>
     </p-card>
   </div>
-</div>
+</ng-template>
