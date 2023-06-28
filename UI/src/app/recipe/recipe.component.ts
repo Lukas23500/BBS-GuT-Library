@@ -170,7 +170,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       const fileBase64: string = fileReader.result as string;
       this.uploadImageGallery.fileBase64 = fileBase64;
     };
-    fileReader.readAsText(file);
+    fileReader.readAsDataURL(file);
 
     this.uploadImageGallery = {
       id: 0,
