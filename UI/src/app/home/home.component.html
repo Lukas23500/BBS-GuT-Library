@@ -1,10 +1,10 @@
 <ng-container *ngIf="(recipes | async) as recipes; else noRecipes">
   <div class="home_wrapper" style="padding-top: 16px;">
     <div class="card">
-      <p-dataView #dv [value]="recipes" [rows]="5" [paginator]="true">
+      <p-dataView #dv class="test" [value]="recipes" [rows]="5" [paginator]="true" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25, 50]">
         <ng-template pTemplate="header">
           <div class="flex flex-column md:flex-row md:justify-content-start">
-            <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (change)="filterData()"
+            <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (change)="filterData()" class="recipe_filter"
               placeholder="Search Recipe" />
             <ng-container *ngIf="(categories | async) as categories">
 

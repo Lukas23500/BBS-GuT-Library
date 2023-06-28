@@ -13,4 +13,7 @@
   & .button_header {
     margin-left: auto;
   }
+  & .card ::ng-deep .recipe_filter{
+    margin-right: 2rem;
+  }
 }
