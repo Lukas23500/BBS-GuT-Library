@@ -2,7 +2,7 @@
   <div class="recipe_ingredient_dialog_wrapper">
     <div class="p-inputgroup">
       <p-dropdown [options]="ingredients" [(ngModel)]="selectedIngredient" optionLabel="name" [filter]="true"
-        filterBy="name" [showClear]="true" placeholder="Select an Ingredient">
+        filterBy="name" [showClear]="true" placeholder="Select an Ingredient" [virtualScroll]="true" [virtualScrollItemSize]="50">
         <ng-template pTemplate="selectedItem">
           <div class="flex align-items-center gap-2" *ngIf="selectedIngredient.name != ''">
             <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"

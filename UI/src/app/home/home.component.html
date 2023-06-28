@@ -8,13 +8,13 @@
               placeholder="Search Recipe" />
             <ng-container *ngIf="(categories | async) as categories">
 
-              <p-dropdown [options]="categories" [(ngModel)]="selectedCategory"
-                (onChange)="filterData()" optionLabel="title" [filter]="true" filterBy="title"
-                [showClear]="true" placeholder="Sort By Category">
+              <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" (onChange)="filterData()"
+                optionLabel="title" [filter]="true" filterBy="title" [showClear]="true" placeholder="Sort By Category"
+                [virtualScroll]="true" [virtualScrollItemSize]="50">
                 <ng-template pTemplate="selectedItem">
                   <div class="flex align-items-center gap-2" *ngIf="selectedCategory?.title != ''">
                     <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
-                    [class]="'flag flag-' + selectedCategory?.title?.toLowerCase()" style="width: 18px" />
+                      [class]="'flag flag-' + selectedCategory?.title?.toLowerCase()" style="width: 18px" />
                     <div>{{ selectedCategory?.title }}</div>
                   </div>
                 </ng-template>
@@ -34,8 +34,7 @@
           <div class="col-12">
             <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
               <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                [src]=""
-                [alt]="recipe.name" />
+                [src]="getImageUrl(recipe)" [alt]="recipe.name" />
               <div class="flex flex-column sm:flex-row align-items-center xl:align-items-start flex-1 gap-4">
                 <div class="flex flex-column align-items-center sm:align-items-start gap-3">
                   <div class="text-2xl font-bold text-900">{{ recipe.name }}</div>
