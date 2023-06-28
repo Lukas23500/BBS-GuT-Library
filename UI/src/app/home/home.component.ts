@@ -3,7 +3,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { RecipeComponent } from '../recipe/recipe.component';
 import { RecipeService, GetRecipeDto, GetCategoryDto, CategoryService, RecipeDto, CategoryDto, API_BASE_URL } from 'api-lib';
-import { Observable, of, share } from 'rxjs';
+import { Observable, share } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -92,5 +92,9 @@ export class HomeComponent implements OnInit {
     this.ref.onMaximize.subscribe((value) => {
       this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
     });
+  }
+
+  public getImageUrl(recipe: RecipeDto): string {
+    return `${this.apiBaseUrl}\\${recipe.thumbnailUrl}`
   }
 }

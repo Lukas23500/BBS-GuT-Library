@@ -125,7 +125,7 @@
                     return null;
                 }
 
-                File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, imageGallery.ImageUrl));
+                File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, existingImageGallery.ImageUrl));
                 imageGallery.ImageUrl = await SaveImage(uploadImageGalleryDto.FileBase64, uploadImageGalleryDto.FileName);
 
                 _context.Entry(existingImageGallery).CurrentValues.SetValues(imageGallery);
