@@ -4,7 +4,7 @@
       <p-dataView #dv [value]="recipes" [rows]="5" [paginator]="true">
         <ng-template pTemplate="header">
           <div class="flex flex-column md:flex-row md:justify-content-start">
-            <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (keyup.enter)="filterData()"
+            <input type="text" pInputText [(ngModel)]="selectedRecipeFilter" (change)="filterData()"
               placeholder="Search Recipe" />
             <ng-container *ngIf="(categories | async) as categories">
 

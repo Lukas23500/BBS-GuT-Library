@@ -19,8 +19,8 @@
       width: 32rem;
     }
 
-    & .input_preptime {
-      max-width: 10rem !important;
+    & .input_preptime ::ng-deep input {
+      max-width: 6rem !important;
     }
   }
 
