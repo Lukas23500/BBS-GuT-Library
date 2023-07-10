@@ -1,2 +1,2 @@
-# BBS-GuT-Recipe
+# Recipe Web Application
 BBS GuT Recipe Project
